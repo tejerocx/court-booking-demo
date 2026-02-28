@@ -1,0 +1,411 @@
+// =============================================
+// SUPABASE CONFIGURATION
+// Replace these with your actual project credentials.
+// Find them at: Supabase Dashboard → Project Settings → API
+// =============================================
+// ⚠️  REPLACE THESE WITH YOUR OWN SUPABASE PROJECT CREDENTIALS
+// Get them at: https://supabase.com → Your Project → Project Settings → API
+const SUPABASE_URL  = 'https://YOUR_PROJECT_REF.supabase.co';   // e.g. https://abcxyz.supabase.co
+const SUPABASE_ANON_KEY = 'YOUR_ANON_PUBLIC_KEY';               // starts with eyJ...
+
+// Initialize Supabase client (uses UMD global loaded from CDN)
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Expose globally so HTML pages can use real-time subscriptions
+window._supabase = _sb;
+
+function _safeJsonParse(v) {
+  try { return JSON.parse(v); } catch(_) { return null; }
+}
+
+function _extractFnError(err, fallback = 'Edge Function request failed') {
+  if (!err) return fallback;
+  if (typeof err === 'string') return err;
+  if (err.message) return String(err.message);
+  if (err.error_description) return String(err.error_description);
+  if (err.error) return String(err.error);
+  if (err.context) {
+    const parsed = _safeJsonParse(err.context);
+    if (parsed?.error) return String(parsed.error);
+    if (typeof err.context === 'string') return err.context;
+  }
+  try { return JSON.stringify(err); } catch(_) { return fallback; }
+}
+
+async function _invokePaymentSessionFallback(payload) {
+  const fnUrl = `${SUPABASE_URL.replace(/\/+$/, '')}/functions/v1/create-payment-session`;
+  const sess = await _sb.auth.getSession();
+  const accessToken = sess?.data?.session?.access_token || '';
+  const authHeader = accessToken ? `Bearer ${accessToken}` : `Bearer ${SUPABASE_ANON_KEY}`;
+
+  let res;
+  try {
+    res = await fetch(fnUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': authHeader,
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (networkErr) {
+    throw new Error(`Cannot reach Edge Function endpoint (${fnUrl}). ${_extractFnError(networkErr, 'Network error')}`);
+  }
+
+  const txt = await res.text();
+  const json = _safeJsonParse(txt);
+  if (!res.ok) {
+    const reason = json?.error || txt || `HTTP ${res.status}`;
+    throw new Error(`Edge Function HTTP ${res.status}: ${reason}`);
+  }
+  if (!json || json.ok !== true || !json.checkoutUrl) {
+    throw new Error(`Invalid Edge Function response: ${txt || 'empty body'}`);
+  }
+  return json;
+}
+
+// =============================================
+// ROW ↔ JS OBJECT MAPPING
+// SQL uses snake_case; JS objects use camelCase
+// =============================================
+function rowToBooking(r) {
+  return {
+    ref:           r.ref,
+    fullName:      r.full_name,
+    contactNumber: r.contact_number,
+    email:         r.email,
+    courtId:       r.court_id,
+    courtName:     r.court_name,
+    date:          r.date,
+    slots:         r.slots || [],
+    startTime:     r.start_time,
+    endTime:       r.end_time,
+    duration:      r.duration,
+    rate:          r.rate,
+    total:         r.total,
+    paymentMethod: r.payment_method,
+    paymentFlow:   r.payment_flow || null,
+    paymentStatus: r.payment_status || 'unpaid',
+    paymentProvider: r.payment_provider || null,
+    paymentSessionId: r.payment_session_id || null,
+    paymentCheckoutUrl: r.payment_checkout_url || null,
+    paidAt:        r.paid_at || null,
+    gcashRef:      r.gcash_ref || null,
+    downpayment:   r.downpayment || null,
+    status:        r.status,
+    createdAt:     r.created_at,
+  };
+}
+
+function bookingToRow(b) {
+  return {
+    ref:            b.ref,
+    full_name:      b.fullName,
+    contact_number: b.contactNumber,
+    email:          b.email,
+    court_id:       b.courtId,
+    court_name:     b.courtName,
+    date:           b.date,
+    slots:          b.slots,
+    start_time:     b.startTime,
+    end_time:       b.endTime,
+    duration:       b.duration,
+    rate:           b.rate,
+    total:          b.total,
+    payment_method: b.paymentMethod,
+    payment_flow:   b.paymentFlow || null,
+    payment_status: b.paymentStatus || 'unpaid',
+    payment_provider: b.paymentProvider || null,
+    payment_session_id: b.paymentSessionId || null,
+    payment_checkout_url: b.paymentCheckoutUrl || null,
+    paid_at:        b.paidAt || null,
+    gcash_ref:      b.gcashRef || null,
+    downpayment:    b.downpayment || null,
+    status:         b.status,
+    created_at:     b.createdAt,
+  };
+}
+
+function rowToCourt(r) {
+  return {
+    id:      r.id,
+    name:    r.name,
+    desc:    r.description,
+    rate:    r.rate,
+    blocked: r.blocked,
+    feats:   r.feats || [],
+    photo:   r.photo || '',
+  };
+}
+
+function courtToRow(c) {
+  return {
+    id:          c.id,
+    name:        c.name,
+    description: c.desc,
+    rate:        c.rate,
+    blocked:     c.blocked,
+    feats:       c.feats || [],
+    photo:       c.photo || null,
+  };
+}
+
+function rowToAccount(r) {
+  return {
+    id:        r.id,
+    username:  r.username,
+    password:  r.password,
+    role:      r.role,
+    fullName:  r.full_name,
+    email:     r.email,
+    createdAt: r.created_at,
+  };
+}
+
+function accountToRow(a) {
+  return {
+    id:         a.id,
+    username:   a.username,
+    password:   a.password,
+    role:       a.role,
+    full_name:  a.fullName,
+    email:      a.email,
+    created_at: a.createdAt,
+  };
+}
+
+// =============================================
+// DB — Async Data Layer (replaces localStorage)
+// =============================================
+window.DB = {
+
+  // ---- COURTS ----
+  async getCourts() {
+    const { data, error } = await _sb.from('courts').select('*').order('id');
+    if (error) { console.error('getCourts:', error); return []; }
+    return data.map(rowToCourt);
+  },
+
+  async saveCourt(court) {
+    const { error } = await _sb.from('courts').upsert(courtToRow(court));
+    if (error) { console.error('saveCourt:', error); throw error; }
+  },
+
+  async deleteCourt(id) {
+    const { error } = await _sb.from('courts').delete().eq('id', id);
+    if (error) console.error('deleteCourt:', error);
+  },
+
+  // ---- BOOKINGS ----
+  async getBookings() {
+    const { data, error } = await _sb.from('bookings').select('*').order('created_at', { ascending: false });
+    if (error) { console.error('getBookings:', error); return []; }
+    return data.map(rowToBooking);
+  },
+
+  async addBooking(booking) {
+    // Check for slot conflicts before inserting
+    const { data: existing } = await _sb
+      .from('bookings')
+      .select('ref, slots')
+      .eq('court_id', booking.courtId)
+      .eq('date', booking.date)
+      .neq('status', 'cancelled');
+
+    if (existing) {
+      const bookedSlots = existing.flatMap(b => b.slots || []);
+      const conflict = (booking.slots || []).some(s => bookedSlots.includes(s));
+      if (conflict) throw new Error('One or more time slots are no longer available. Please refresh and choose a different time.');
+    }
+
+    const { error } = await _sb.from('bookings').insert(bookingToRow(booking));
+    if (error) { console.error('addBooking:', error); throw error; }
+  },
+
+  async getBookingByRef(ref) {
+    const { data, error } = await _sb.from('bookings').select('*').eq('ref', ref).single();
+    if (error) { console.error('getBookingByRef:', error); return null; }
+    return rowToBooking(data);
+  },
+
+  async updateBooking(ref, updates) {
+    // Map only the fields provided (camelCase → snake_case)
+    const row = {};
+    if (updates.status    !== undefined) row.status = updates.status;
+    if (updates.fullName  !== undefined) row.full_name = updates.fullName;
+    if (updates.paymentStatus !== undefined) row.payment_status = updates.paymentStatus;
+    if (updates.paymentFlow !== undefined) row.payment_flow = updates.paymentFlow;
+    if (updates.paymentProvider !== undefined) row.payment_provider = updates.paymentProvider;
+    if (updates.paymentSessionId !== undefined) row.payment_session_id = updates.paymentSessionId;
+    if (updates.paymentCheckoutUrl !== undefined) row.payment_checkout_url = updates.paymentCheckoutUrl;
+    if (updates.paidAt !== undefined) row.paid_at = updates.paidAt;
+    if (updates.gcashRef !== undefined) row.gcash_ref = updates.gcashRef;
+    if (updates.downpayment !== undefined) row.downpayment = updates.downpayment;
+    if (updates.date !== undefined) row.date = updates.date;
+    if (updates.startTime !== undefined) row.start_time = updates.startTime;
+    if (updates.endTime !== undefined) row.end_time = updates.endTime;
+    if (updates.duration !== undefined) row.duration = updates.duration;
+    if (updates.slots !== undefined) row.slots = updates.slots;
+    const { error } = await _sb.from('bookings').update(row).eq('ref', ref);
+    if (error) console.error('updateBooking:', error);
+  },
+
+  async deleteBooking(ref) {
+    const { error } = await _sb.from('bookings').delete().eq('ref', ref);
+    if (error) console.error('deleteBooking:', error);
+  },
+
+  // ---- BLOCKED DATES ----
+  async getBlockedDates() {
+    const { data, error } = await _sb.from('blocked_dates').select('date').order('date');
+    if (error) { console.error('getBlockedDates:', error); return []; }
+    return data.map(r => r.date);
+  },
+
+  async addBlockedDate(date) {
+    const { error } = await _sb.from('blocked_dates').insert({ date, created_at: new Date().toISOString() });
+    if (error) console.error('addBlockedDate:', error);
+  },
+
+  async removeBlockedDate(date) {
+    const { error } = await _sb.from('blocked_dates').delete().eq('date', date);
+    if (error) console.error('removeBlockedDate:', error);
+  },
+
+  // ---- ACCOUNTS ----
+  async getAccounts() {
+    const { data, error } = await _sb.from('accounts').select('*').order('created_at');
+    if (error) { console.error('getAccounts:', error); return []; }
+    return data.map(rowToAccount);
+  },
+
+  async saveAccount(account) {
+    const { error } = await _sb.from('accounts').upsert(accountToRow(account));
+    if (error) { console.error('saveAccount:', error); throw error; }
+  },
+
+  async deleteAccount(id) {
+    const { error } = await _sb.from('accounts').delete().eq('id', id);
+    if (error) console.error('deleteAccount:', error);
+  },
+
+  // ---- SETTINGS ----
+  async getSettings() {
+    const { data, error } = await _sb.from('settings').select('*');
+    if (error) { console.error('getSettings:', error); return {}; }
+    const out = {};
+    data.forEach(r => out[r.key] = r.value);
+    return out;
+  },
+
+  async saveSetting(key, value) {
+    const { error } = await _sb.from('settings').upsert({ key, value });
+    if (error) { console.error('saveSetting:', error); throw error; }
+  },
+
+  async createPaymentSession(payload) {
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      throw new Error('Supabase configuration missing (SUPABASE_URL / SUPABASE_ANON_KEY).');
+    }
+    const { data, error } = await _sb.functions.invoke('create-payment-session', { body: payload });
+    if (!error && data) return data;
+
+    // Fallback path: direct HTTP call to the function endpoint. This helps diagnose
+    // invoke-wrapper issues and still allows checkout if endpoint is reachable.
+    try {
+      return await _invokePaymentSessionFallback(payload);
+    } catch (fallbackErr) {
+      const baseReason = _extractFnError(error, 'Failed to send a request to the Edge Function');
+      const fbReason = _extractFnError(fallbackErr, 'Fallback call failed');
+      console.error('createPaymentSession.invokeError:', error);
+      console.error('createPaymentSession.fallbackError:', fallbackErr);
+      throw new Error(`${baseReason}. Fallback failed: ${fbReason}`);
+    }
+  },
+
+  // ---- SEED DEFAULT DATA (runs once on first load) ----
+  async seedDefaultData() {
+    const courts = await this.getCourts();
+    if (courts.length === 0) {
+      await _sb.from('courts').insert([
+        { id: 'c1', name: 'Court Alpha', description: 'Outdoor · Air passing through · Standard Flooring', rate: 350, blocked: false, feats: ['Outdoor','Open Air','Standard Floor'], photo: null },
+        { id: 'c2', name: 'Court Beta',  description: 'Outdoor · Air passing through · Standard Flooring', rate: 280, blocked: false, feats: ['Outdoor','Open Air','Standard Floor'], photo: null },
+      ]);
+    }
+
+    const accounts = await this.getAccounts();
+    if (accounts.length === 0) {
+      await _sb.from('accounts').insert([{
+        id: 'dev_001', username: 'developer', password: 'dev123',
+        role: 'developer', full_name: 'Super Admin',
+        email: 'dev@pickleballhub.com', created_at: new Date().toISOString(),
+      }]);
+    }
+  },
+};
+
+// =============================================
+// AUTH — Supabase Auth (email + password)
+// Admin accounts are managed in Supabase Dashboard → Authentication → Users
+// The accounts table stores role/display info linked by email.
+// =============================================
+window.Auth = {
+
+  async login(email, password) {
+    // Sign in via Supabase Auth — establishes a verified JWT session
+    const { data, error } = await _sb.auth.signInWithPassword({ email, password });
+    if (error || !data.user) return { ok: false };
+
+    // Fetch role/name from accounts table (now accessible as authenticated user)
+    const { data: acc } = await _sb.from('accounts').select('*').eq('email', email).single();
+    const session = acc
+      ? { ...rowToAccount(acc), loginAt: new Date().toISOString() }
+      : { id: data.user.id, email: data.user.email, role: 'admin', fullName: 'Admin', loginAt: new Date().toISOString() };
+    sessionStorage.setItem('pb_session', JSON.stringify(session));
+    return { ok: true };
+  },
+
+  getSession() {
+    const s = sessionStorage.getItem('pb_session');
+    return s ? JSON.parse(s) : null;
+  },
+
+  requireAuth() {
+    const sess = this.getSession();
+    if (!sess) { window.location.href = 'login.html'; return null; }
+    return sess;
+  },
+
+  async logout() {
+    await _sb.auth.signOut();
+    sessionStorage.removeItem('pb_session');
+    window.location.href = 'login.html';
+  },
+
+  // Used by admin.html account management
+  async getAll() {
+    return DB.getAccounts();
+  },
+
+  async add(d) {
+    const all = await DB.getAccounts();
+    if (all.find(x => x.username === d.username)) return { ok: false, msg: 'Username taken.' };
+    const acc = { id: 'mgr_' + Date.now(), ...d, role: 'manager', createdAt: new Date().toISOString() };
+    try { await DB.saveAccount(acc); return { ok: true }; }
+    catch(e) { return { ok: false, msg: 'Failed to save.' }; }
+  },
+
+  async update(id, d) {
+    const all = await DB.getAccounts();
+    const existing = all.find(x => x.id === id);
+    if (!existing) return { ok: false };
+    try { await DB.saveAccount({ ...existing, ...d }); return { ok: true }; }
+    catch(e) { return { ok: false }; }
+  },
+
+  async del(id) {
+    await DB.deleteAccount(id);
+    return { ok: true };
+  },
+};

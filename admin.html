@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Your Court Name — Admin Dashboard</title>
+<link rel="icon" type="image/jpeg" href="f6b5eb3c-a6b6-49ce-981e-d9b127b67ba3.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--green:#4a9a4a;--green-dark:#1d5a1d;--glow:rgba(74,154,74,.22);--bg:#0d1a0d;--card:#131e13;--border:#253825;--text:#e4ede4;--muted:#7a9a7a;--input:#1a2a1a;--red:#e05a4e;--yellow:#c8a060;--r:12px;}
+body.light{--bg:#f2ede5;--card:#faf7f2;--border:#c8b898;--text:#1a2e1a;--muted:#5a7a5a;--input:#ece7de;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
+h1,h2,h3,h4{font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* SIDEBAR */
+.sidebar{width:250px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform .3s;}
+.sb-head{padding:18px 18px 14px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(74,154,74,.08),transparent);}
+.logo{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.logo-img{width:36px;height:36px;border-radius:7px;object-fit:cover;border:1.5px solid rgba(74,154,74,.35);box-shadow:0 2px 8px rgba(0,0,0,.35);flex-shrink:0;}
+.logo-tx{font-family:'Bebas Neue',sans-serif;line-height:1.15;}
+.logo-tx .logo-name{display:block;font-size:1.15rem;letter-spacing:2px;}
+.logo-tx .logo-sub{display:block;font-size:.65rem;color:var(--green);letter-spacing:1.5px;}
+.user-row{display:flex;align-items:center;gap:9px;}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-dark));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;color:#000;flex-shrink:0;}
+.u-name{font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.u-email{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.role-bdg{font-size:.63rem;font-weight:800;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;margin-top:3px;display:inline-block;}
+.r-dev{background:rgba(74,154,74,.18);color:var(--green);}
+.r-mgr{background:rgba(200,160,96,.18);color:var(--yellow);}
+.sb-nav{flex:1;overflow-y:auto;padding:10px 0;}
+.nav-grp{padding:8px 18px 3px;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
+.nav-item{display:flex;align-items:center;gap:9px;padding:10px 18px;cursor:pointer;font-size:.88rem;font-weight:500;color:var(--muted);border-left:3px solid transparent;transition:all .15s;}
+.nav-item:hover{background:var(--input);color:var(--text);}
+.nav-item.on{background:rgba(0,200,83,.08);color:var(--green);border-left-color:var(--green);}
+.sb-foot{padding:14px 18px;border-top:1px solid var(--border);display:flex;gap:8px;}
+
+/* MAIN */
+.main{margin-left:250px;flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{height:58px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 26px;position:sticky;top:0;z-index:100;}
+.topbar h2{font-size:1.35rem;}
+.top-r{display:flex;align-items:center;gap:12px;}
+.burger{display:none;background:none;border:none;font-size:1.3rem;color:var(--text);cursor:pointer;}
+/* switch */
+.sw-wrap{display:flex;align-items:center;gap:7px;font-size:.84rem;color:var(--muted);}
+.sw{position:relative;width:42px;height:23px;}
+.sw input{opacity:0;width:0;height:0;}
+.sw-tr{position:absolute;inset:0;background:var(--border);border-radius:23px;cursor:pointer;transition:.3s;}
+.sw-tr::before{content:'';position:absolute;width:17px;height:17px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s;}
+.sw input:checked+.sw-tr{background:var(--green);}
+.sw input:checked+.sw-tr::before{transform:translateX(19px);}
+
+/* CONTENT */
+.content{padding:26px;flex:1;}
+.adm-sec{display:none;}
+.adm-sec.on{display:block;}
+
+/* STAT CARDS */
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-bottom:26px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;position:relative;overflow:hidden;}
+.sc::after{content:'';position:absolute;top:-10px;right:-10px;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,rgba(0,200,83,.1),transparent);pointer-events:none;}
+.sc-lbl{font-size:.76rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:7px;}
+.sc-val{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--green);line-height:1;}
+.sc-ic{position:absolute;top:14px;right:14px;font-size:1.4rem;opacity:.45;}
+
+/* REVENUE */
+.rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:26px;}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.panel h4{font-size:.82rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:14px;}
+.pay-row{display:flex;justify-content:space-between;font-size:.88rem;margin-bottom:5px;}
+.bar{height:6px;background:var(--input);border-radius:3px;overflow:hidden;margin-bottom:14px;}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s;}
+.bar-g .bar-fill{background:var(--green);}
+.bar-y .bar-fill{background:var(--yellow);}
+
+/* TABLE WRAP */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.tbl-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.tbl-hd h3{font-size:1.05rem;}
+.filters{display:flex;gap:8px;flex-wrap:wrap;}
+.filters input,.filters select{padding:8px 11px;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.83rem;}
+.filters input:focus,.filters select:focus{outline:none;border-color:var(--green);}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;padding:11px 14px;font-size:.73rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);background:rgba(0,0,0,.08);}
+td{padding:11px 14px;font-size:.86rem;border-bottom:1px solid rgba(48,54,61,.5);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(0,200,83,.025);}
+.tbl-scroll{overflow-x:auto;}
+
+/* TOOLBAR */
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.toolbar h2{font-size:1.5rem;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-p{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;box-shadow:0 4px 12px var(--glow);}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 6px 18px var(--glow);}
+.btn-g{background:var(--input);color:var(--text);border:1px solid var(--border);}
+.btn-g:hover{background:var(--border);}
+.btn-d{background:var(--red);color:#fff;}
+.btn-d:hover{background:#cc0000;}
+.btn-sm{padding:6px 12px;font-size:.79rem;}
+
+/* BADGES */
+.bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;}
+.bdg-p{background:rgba(255,214,0,.12);color:var(--yellow);}
+.bdg-c{background:rgba(0,200,83,.12);color:var(--green);}
+.bdg-d{background:rgba(128,128,255,.12);color:#8080ff;}
+.bdg-x{background:rgba(248,81,73,.12);color:var(--red);}
+
+/* FORM */
+.fg{margin-bottom:14px;}
+.fl{display:block;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px;}
+.fi{width:100%;padding:10px 13px;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.9rem;transition:border-color .2s;}
+.fi:focus{outline:none;border-color:var(--green);}
+.fi::placeholder{color:var(--muted);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.overlay.show{opacity:1;pointer-events:all;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform .3s;}
+.overlay.show .modal{transform:translateY(0);}
+.m-hd{padding:18px 22px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(0,200,83,.08),transparent);display:flex;align-items:center;justify-content:space-between;}
+.m-hd h2{font-size:1.3rem;}
+.m-x{width:28px;height:28px;border:none;border-radius:7px;background:var(--input);color:var(--text);cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.m-x:hover{background:var(--red);}
+.m-body{padding:20px 22px;}
+.m-foot{padding:12px 22px;border-top:1px solid var(--border);display:flex;gap:9px;justify-content:flex-end;}
+
+/* BLOCKED */
+.blk-item{display:flex;align-items:center;justify-content:space-between;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:11px 14px;margin-bottom:8px;font-size:.88rem;}
+
+/* TOASTS */
+.toasts{position:fixed;top:70px;right:18px;z-index:999;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 15px;display:flex;align-items:center;gap:9px;min-width:250px;box-shadow:0 6px 24px rgba(0,0,0,.4);animation:tin .3s ease;font-size:.85rem;}
+@keyframes tin{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.ok{border-left:3px solid var(--green);}
+.toast.err{border-left:3px solid var(--red);}
+.toast.inf{border-left:3px solid #4fc3f7;}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .burger{display:flex;}
+  .rev-grid{grid-template-columns:1fr;}
+  .stat-cards{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:480px){.content{padding:14px;}.frow{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="toasts" id="toasts"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-head">
+    <div class="logo">
+      <img class="logo-img" src="f6b5eb3c-a6b6-49ce-981e-d9b127b67ba3.jpg" alt="Court Logo"/>
+      <span class="logo-tx">
+        <span class="logo-name">Your Court Name</span>
+        <span class="logo-sub">Your Location</span>
+      </span>
+    </div>
+    <div class="user-row">
+      <div class="avatar" id="avt">A</div>
+      <div style="overflow:hidden">
+        <div class="u-name" id="uName">—</div>
+        <div class="u-email" id="uEmail">—</div>
+        <div class="role-bdg r-dev" id="uRole">—</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="nav-grp">Overview</div>
+    <div class="nav-item on" data-s="dash" onclick="goto('dash')">📊 Dashboard</div>
+    <div class="nav-item" data-s="bookings" onclick="goto('bookings')">📋 Bookings</div>
+    <div class="nav-grp">Management</div>
+    <div class="nav-item" data-s="courts" onclick="goto('courts')">🏟️ Courts</div>
+    <div class="nav-item" data-s="blocked" onclick="goto('blocked')">🔒 Blocked Dates</div>
+    <div class="nav-grp dev-only">Admin Only</div>
+    <div class="nav-item dev-only" data-s="accounts" onclick="goto('accounts')">👥 Accounts</div>
+  </nav>
+
+  <div class="sb-foot">
+    <a href="index.html" class="btn btn-g btn-sm" style="flex:1">← User Page</a>
+    <button class="btn btn-g btn-sm" onclick="logout()">Logout</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="burger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <h2 id="topTitle">Dashboard</h2>
+    </div>
+    <div class="top-r">
+      <div class="sw-wrap">
+        <span>☀️</span>
+        <label class="sw"><input type="checkbox" id="dkTog" checked><span class="sw-tr"></span></label>
+        <span>🌙</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="sec-dash" class="adm-sec on">
+      <div class="stat-cards">
+        <div class="sc"><div class="sc-lbl">Total Bookings</div><div class="sc-val" id="dTotal">0</div><div class="sc-ic">📋</div></div>
+        <div class="sc"><div class="sc-lbl">Today's Bookings</div><div class="sc-val" id="dToday">0</div><div class="sc-ic">📅</div></div>
+        <div class="sc"><div class="sc-lbl">Total Revenue</div><div class="sc-val" id="dRev">₱0</div><div class="sc-ic">💰</div></div>
+        <div class="sc"><div class="sc-lbl">Most Booked</div><div class="sc-val" style="font-size:1rem;margin-top:4px" id="dMost">—</div><div class="sc-ic">🏆</div></div>
+      </div>
+
+      <div class="rev-grid">
+        <div class="panel">
+          <h4>Payment Breakdown</h4>
+          <div class="pay-row"><span>📲 GCash</span><span id="pGcash">₱0.00</span></div>
+          <div class="bar bar-g"><div class="bar-fill" id="gBar" style="width:0%"></div></div>
+          <div class="pay-row"><span>💵 Cash</span><span id="pCash">₱0.00</span></div>
+          <div class="bar bar-y"><div class="bar-fill" id="cBar" style="width:0%"></div></div>
+        </div>
+        <div class="panel">
+          <h4>Quick Actions</h4>
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <button class="btn btn-g" onclick="goto('bookings')">📋 View All Bookings</button>
+            <button class="btn btn-g" onclick="exportCSV()">📥 Export CSV</button>
+            <button class="btn btn-g" onclick="goto('courts')">🏟️ Manage Courts</button>
+            <button class="btn btn-g" onclick="goto('blocked')">🔒 Blocked Dates</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tbl-wrap">
+        <div class="tbl-hd"><h3>🕒 Recent Bookings</h3><button class="btn btn-g btn-sm" onclick="goto('bookings')">View All →</button></div>
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>Ref</th><th>Name</th><th>Court</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="recentBody"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">No bookings yet.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKINGS -->
+    <div id="sec-bookings" class="adm-sec">
+      <div class="toolbar">
+        <h2>📋 ALL BOOKINGS</h2>
+        <button class="btn btn-p btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-hd">
+          <div class="filters">
+            <input type="text" id="srch" placeholder="🔍 Search name, ref, email…" oninput="renderBookings()"/>
+            <input type="date" id="fDate" onchange="renderBookings()"/>
+            <select id="fStatus" onchange="renderBookings()">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <button class="btn btn-g btn-sm" onclick="clearFilters()">Clear</button>
+          </div>
+        </div>
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>Ref</th><th>Customer</th><th>Court</th><th>Schedule</th><th>Amount</th><th>Payment</th><th>Pay State</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="bookBody"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px">No bookings.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- COURTS -->
+    <div id="sec-courts" class="adm-sec">
+      <div class="toolbar">
+        <h2>🏟️ COURT MANAGEMENT</h2>
+        <button class="btn btn-p" onclick="openCourtModal()">+ Add Court</button>
+      </div>
+
+      <!-- OPERATING HOURS PANEL -->
+      <div class="panel" style="margin-bottom:20px;border:1px solid var(--border);">
+        <h4>⏰ Operating Hours</h4>
+        <p style="color:var(--muted);font-size:.84rem;margin:8px 0 16px">Set the daily open and close time for all courts. Changes apply immediately to the booking page.</p>
+        <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+          <div>
+            <label class="fl">Open Time</label>
+            <select class="fi" id="ohOpen" style="width:auto;min-width:130px"></select>
+          </div>
+          <div>
+            <label class="fl">Close Time</label>
+            <select class="fi" id="ohClose" style="width:auto;min-width:130px"></select>
+          </div>
+          <button class="btn btn-p btn-sm" onclick="saveHours()" style="margin-bottom:1px">💾 Save Hours</button>
+        </div>
+        <div id="ohSummary" style="margin-top:12px;padding:10px 14px;background:var(--input);border:1px solid var(--border);border-radius:8px;font-size:.84rem;color:var(--muted);display:none"></div>
+      </div>
+
+      <!-- PRICING TIERS PANEL (developer only) -->
+      <div class="panel dev-only" style="margin-bottom:20px;border:1px solid var(--border);">
+        <h4>💰 Pricing Tiers <span style="font-size:.72rem;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:400;margin-left:8px">Developer Only</span></h4>
+        <p style="color:var(--muted);font-size:.84rem;margin:8px 0 16px">Set time-based hourly rates for all courts. Each tier defines a rate for a specific time range. Changes apply immediately to the booking page.</p>
+        <div id="tiersBody"></div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+          <button class="btn btn-g btn-sm" onclick="addTierRow()">+ Add Tier</button>
+          <button class="btn btn-p btn-sm" onclick="savePricingTiers()">💾 Save Tiers</button>
+        </div>
+      </div>
+
+      <!-- PAYMENT SETTINGS PANEL -->
+      <div class="panel" style="margin-bottom:20px;border:1px solid var(--border);">
+        <h4>📲 Payment QR Settings</h4>
+        <p style="color:var(--muted);font-size:.84rem;margin:8px 0 16px">
+          Update QR codes and merchant details. Changes reflect immediately on the booking form.
+        </p>
+
+        <div class="fg">
+          <label class="fl">Enabled Payment Methods</label>
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:7px;font-size:.84rem;cursor:pointer">
+              <input type="checkbox" id="payMethodCashOn" /> Cash
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;font-size:.84rem;cursor:pointer">
+              <input type="checkbox" id="payMethodGcashOn" /> GCash
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;font-size:.84rem;cursor:pointer">
+              <input type="checkbox" id="payMethodGotymeOn" /> GoTyme
+            </label>
+          </div>
+        </div>
+
+        <!-- GCash Section -->
+        <div style="margin-top:16px;padding:14px;background:var(--input);border-radius:10px;border:1px solid var(--border);">
+          <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--green);margin-bottom:10px;">📲 GCash</div>
+          <div class="frow" style="gap:10px;margin-bottom:10px;">
+            <div class="fg" style="margin:0;flex:1">
+              <label class="fl">GCash Number</label>
+              <input type="text" class="fi" id="gcashNumInput" placeholder="e.g. 0935 935 5010" />
+            </div>
+            <div class="fg" style="margin:0;flex:1">
+              <label class="fl">Account Name</label>
+              <input type="text" class="fi" id="gcashNameInput" placeholder="e.g. Your Court Name" />
+            </div>
+          </div>
+          <div class="fg" style="margin:0">
+            <label class="fl">GCash QR Code Image</label>
+            <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
+              <div id="gcashQrPreviewWrap" style="display:none">
+                <img id="gcashQrPreview" src="" alt="GCash QR" style="width:110px;height:110px;object-fit:contain;border-radius:8px;border:1px solid var(--border);background:#fff;padding:4px;"/>
+              </div>
+              <label style="flex:1;min-width:160px;display:flex;align-items:center;gap:9px;padding:11px 13px;background:var(--card);border:1.5px dashed var(--border);border-radius:8px;cursor:pointer;font-size:.84rem;color:var(--muted);" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
+                📷 Upload GCash QR image
+                <input type="file" accept="image/*" id="gcashQrFile" style="display:none" onchange="handleQrUpload('gcash',event)"/>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- GoTyme Section -->
+        <div style="margin-top:12px;padding:14px;background:var(--input);border-radius:10px;border:1px solid var(--border);">
+          <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--yellow);margin-bottom:10px;">🏦 GoTyme</div>
+          <div class="fg" style="margin-bottom:10px">
+            <label class="fl">Account Name</label>
+            <input type="text" class="fi" id="gotymeNameInput" placeholder="e.g. Your Court Name" />
+          </div>
+          <div class="fg" style="margin:0">
+            <label class="fl">GoTyme QR Code Image</label>
+            <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
+              <div id="gotymeQrPreviewWrap" style="display:none">
+                <img id="gotymeQrPreview" src="" alt="GoTyme QR" style="width:110px;height:110px;object-fit:contain;border-radius:8px;border:1px solid var(--border);background:#fff;padding:4px;"/>
+              </div>
+              <label style="flex:1;min-width:160px;display:flex;align-items:center;gap:9px;padding:11px 13px;background:var(--card);border:1.5px dashed var(--border);border-radius:8px;cursor:pointer;font-size:.84rem;color:var(--muted);" onmouseover="this.style.borderColor='var(--yellow)'" onmouseout="this.style.borderColor='var(--border)'">
+                📷 Upload GoTyme QR image
+                <input type="file" accept="image/*" id="gotymeQrFile" style="display:none" onchange="handleQrUpload('gotyme',event)"/>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px">
+          <button class="btn btn-p btn-sm" onclick="savePaymentSettings()">💾 Save Payment Settings</button>
+          <span id="paySettingsSummary" style="font-size:.78rem;color:var(--muted)"></span>
+        </div>
+      </div>
+
+      <div class="tbl-wrap">
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>Name</th><th>Description</th><th>Rate</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="courtBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCOUNTS (dev only) -->
+    <div id="sec-accounts" class="adm-sec dev-only">
+      <div class="toolbar">
+        <h2>👥 ACCOUNT MANAGEMENT</h2>
+        <button class="btn btn-p" onclick="openAccModal()">+ Add Manager</button>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th>Full Name</th><th>Username</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+            <tbody id="accBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCKED -->
+    <div id="sec-blocked" class="adm-sec">
+      <h2 style="margin-bottom:18px">🔒 BLOCKED DATES</h2>
+      <div class="panel" style="max-width:520px">
+        <p style="color:var(--muted);font-size:.86rem;margin-bottom:16px">Block dates for maintenance. Users cannot book on these dates.</p>
+        <div style="display:flex;gap:10px;margin-bottom:20px;align-items:flex-end">
+          <div style="flex:1">
+            <label class="fl">Select Date</label>
+            <input type="date" class="fi" id="newBlk"/>
+          </div>
+          <button class="btn btn-d" onclick="addBlocked()">🔒 Block</button>
+        </div>
+        <div id="blkList"><p style="color:var(--muted);font-style:italic">No blocked dates.</p></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- COURT MODAL -->
+<div class="overlay" id="courtModal">
+  <div class="modal">
+    <div class="m-hd"><h2 id="cmTitle">ADD COURT</h2><button class="m-x" onclick="closeModal('courtModal')">✕</button></div>
+    <div class="m-body">
+      <input type="hidden" id="cmId"/>
+      <input type="hidden" id="cmPhoto"/>
+      <div class="fg"><label class="fl">Court Name</label><input type="text" class="fi" id="cmName" placeholder="e.g. Court Alpha"/></div>
+      <div class="fg"><label class="fl">Description</label><input type="text" class="fi" id="cmDesc" placeholder="e.g. Outdoor · Air passing through · Standard Flooring"/></div>
+      <div class="fg"><label class="fl">Hourly Rate (₱)</label><input type="number" class="fi" id="cmRate" placeholder="e.g. 350" min="1"/></div>
+      <div class="fg">
+        <label class="fl">Court Photo</label>
+        <img id="cmPhotoPreview" src="" alt="Court preview" style="display:none;width:100%;max-height:150px;object-fit:cover;border-radius:8px;margin-bottom:10px;border:1px solid var(--border);"/>
+        <label style="display:flex;align-items:center;gap:9px;padding:11px 13px;background:var(--input);border:1.5px dashed var(--border);border-radius:8px;cursor:pointer;font-size:.86rem;color:var(--muted);transition:border-color .2s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
+          📷 Click to upload court photo
+          <input type="file" accept="image/*" id="cmPhotoFile" style="display:none" onchange="handleCourtPhoto(event)"/>
+        </label>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+          <span style="font-size:.73rem;color:var(--muted);white-space:nowrap">Or paste URL:</span>
+          <input type="text" class="fi" id="cmPhotoUrl" placeholder="https://example.com/court.jpg" style="font-size:.82rem;" oninput="previewPhotoUrl()"/>
+        </div>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-g" onclick="closeModal('courtModal')">Cancel</button>
+      <button class="btn btn-p" onclick="saveCourt()">💾 Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNT MODAL -->
+<div class="overlay" id="accModal">
+  <div class="modal">
+    <div class="m-hd"><h2 id="amTitle">ADD MANAGER</h2><button class="m-x" onclick="closeModal('accModal')">✕</button></div>
+    <div class="m-body">
+      <input type="hidden" id="amId"/>
+      <div class="frow">
+        <div class="fg" style="margin:0"><label class="fl">Full Name</label><input type="text" class="fi" id="amFull" placeholder="Full Name"/></div>
+        <div class="fg" style="margin:0"><label class="fl">Username</label><input type="text" class="fi" id="amUser" placeholder="username"/></div>
+      </div>
+      <div class="fg" style="margin-top:12px"><label class="fl">Email</label><input type="email" class="fi" id="amEmail" placeholder="email@example.com"/></div>
+      <div class="fg"><label class="fl">Password <span style="color:var(--muted);font-weight:400;text-transform:none">(blank = keep existing)</span></label><input type="password" class="fi" id="amPass" placeholder="Password"/></div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-g" onclick="closeModal('accModal')">Cancel</button>
+      <button class="btn btn-p" onclick="saveAcc()">💾 Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- VERIFY PAYMENT MODAL -->
+<div class="overlay" id="verifyModal">
+  <div class="modal" style="max-width:400px">
+    <div class="m-hd" style="background:linear-gradient(135deg,rgba(200,160,96,.1),transparent)">
+      <h2 style="color:var(--yellow)">🔍 VERIFY PAYMENT</h2>
+      <button class="m-x" onclick="closeModal('verifyModal')">✕</button>
+    </div>
+    <div class="m-body">
+      <div style="text-align:center;margin-bottom:16px">
+        <span id="vmMethod" style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;padding:5px 18px;border-radius:20px;background:rgba(74,154,74,.1);color:var(--green);border:1px solid rgba(74,154,74,.25)">GCash</span>
+      </div>
+      <div style="background:rgba(74,154,74,.07);border:1.5px solid rgba(74,154,74,.28);border-radius:10px;padding:16px;text-align:center;margin-bottom:14px">
+        <div style="font-size:.66rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Payment Reference #</div>
+        <div id="vmGcashRef" style="font-family:monospace;font-size:1.55rem;font-weight:800;color:var(--green);letter-spacing:2px">—</div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:5px">Check your GCash/GoTyme app for this reference</div>
+      </div>
+      <div style="font-size:.82rem;color:var(--muted)">
+        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>Customer</span><strong style="color:var(--text)" id="vmName">—</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>Contact</span><span id="vmContact">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>Booking Ref</span><code style="color:var(--green)" id="vmRef">—</code></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>Court</span><span id="vmCourt">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span>Schedule</span><span id="vmDate">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0"><span>Downpayment</span><strong style="color:var(--yellow)" id="vmAmount">—</strong></div>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6">
+        Open your GCash inbox and match the reference above, then mark as received to confirm the booking and send an email to the customer.
+      </p>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-d" onclick="rejectPayment()">❌ Not Received</button>
+      <button class="btn btn-p" onclick="verifyAndConfirm()">✅ Received — Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESCHEDULE MODAL -->
+<div class="overlay" id="rescheduleModal">
+  <div class="modal" style="max-width:440px">
+    <div class="m-hd" style="background:linear-gradient(135deg,rgba(74,154,220,.1),transparent)">
+      <h2 style="color:#5a9ad4">📅 RESCHEDULE BOOKING</h2>
+      <button class="m-x" onclick="closeModal('rescheduleModal')">✕</button>
+    </div>
+    <div class="m-body">
+      <!-- Current schedule -->
+      <div style="background:rgba(200,160,96,.07);border:1px solid rgba(200,160,96,.25);border-radius:8px;padding:12px 16px;margin-bottom:18px;">
+        <div style="font-size:.67rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:5px;">Current Schedule</div>
+        <div style="font-size:.9rem;font-weight:700;color:var(--text)" id="rsOldCourt">—</div>
+        <div style="font-size:.84rem;color:var(--yellow);margin-top:2px"><span id="rsOldDate">—</span> · <span id="rsOldTime">—</span></div>
+        <div style="font-size:.78rem;color:var(--muted);margin-top:3px;">👤 <span id="rsName">—</span></div>
+      </div>
+
+      <!-- New date -->
+      <div class="fg">
+        <label class="fl">New Date</label>
+        <input type="date" class="fi" id="rsNewDate" />
+      </div>
+
+      <!-- Start time + Duration -->
+      <div class="frow" style="gap:10px;">
+        <div class="fg" style="margin:0;flex:1">
+          <label class="fl">Start Time</label>
+          <select class="fi" id="rsStartTime" onchange="updateRsEndTime()"></select>
+        </div>
+        <div class="fg" style="margin:0;flex:1">
+          <label class="fl">Duration</label>
+          <select class="fi" id="rsDuration" onchange="updateRsEndTime()">
+            <option value="1">1 hour</option>
+            <option value="2" selected>2 hours</option>
+            <option value="3">3 hours</option>
+            <option value="4">4 hours</option>
+          </select>
+        </div>
+      </div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:6px;margin-bottom:14px;">
+        New end time: <strong id="rsEndTimeDisplay" style="color:#5a9ad4;">—</strong>
+      </div>
+
+      <!-- Note to customer -->
+      <div class="fg" style="margin:0">
+        <label class="fl">Note to Customer <span style="color:var(--muted);font-weight:400;text-transform:none;">(sent via email)</span></label>
+        <textarea class="fi" id="rsNote" rows="3" placeholder="e.g. Heavy rain expected — we moved your slot to keep you safe!" style="resize:none;font-size:.84rem;line-height:1.5;"></textarea>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-g" onclick="closeModal('rescheduleModal')">Cancel</button>
+      <button class="btn btn-p" onclick="saveReschedule()">📅 Reschedule & Notify</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==============================================
+   UTILS
+   ============================================== */
+const $=id=>document.getElementById(id);
+const fmt=n=>'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2});
+const fmtD=s=>{if(!s)return'—';return new Date(s+'T00:00:00').toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});};
+function statusBdg(s){const m={pending:'bdg-p',confirmed:'bdg-c',completed:'bdg-d',cancelled:'bdg-x'};return`<span class="bdg ${m[s]||''}">${s}</span>`;}
+function payStatusBdg(s){
+  const v = (s || 'unpaid').toLowerCase();
+  const label = v.replace(/_/g, ' ');
+  const cls = v === 'paid' ? 'bdg-c' : v === 'pending' ? 'bdg-p' : v === 'failed' ? 'bdg-x' : 'bdg-d';
+  return `<span class="bdg ${cls}">${label}</span>`;
+}
+function toast(msg,type='ok'){const icons={ok:'✅',err:'❌',inf:'ℹ️'};const el=document.createElement('div');el.className=`toast ${type}`;el.innerHTML=`<span>${icons[type]}</span><span>${msg}</span>`;$('toasts').appendChild(el);setTimeout(()=>el.remove(),3800);}
+function closeModal(id){$(id).classList.remove('show');}
+
+let sess;
+
+/* ==============================================
+   NAVIGATION
+   ============================================== */
+const titles={dash:'Dashboard',bookings:'Bookings',courts:'Courts',accounts:'Accounts',blocked:'Blocked Dates'};
+async function goto(s){
+  document.querySelectorAll('.adm-sec').forEach(el=>el.classList.remove('on'));
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('on',el.dataset.s===s));
+  $('sec-'+s).classList.add('on');
+  $('topTitle').textContent=titles[s]||s;
+  document.getElementById('sidebar').classList.remove('open');
+  const loaders={dash:renderDash,bookings:renderBookings,courts:renderCourts,accounts:renderAccounts,blocked:renderBlocked};
+  if(loaders[s]) await loaders[s]();
+}
+
+/* ==============================================
+   DASHBOARD
+   ============================================== */
+async function renderDash(){
+  const bks=await DB.getBookings();
+  const today=new Date().toISOString().split('T')[0];
+  const active=bks.filter(b=>b.status!=='cancelled');
+  const rev=active.reduce((s,b)=>s+b.total,0);
+  const todayBks=bks.filter(b=>b.date===today);
+  const cc={};active.forEach(b=>{cc[b.courtName]=(cc[b.courtName]||0)+1;});
+  const most=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
+  $('dTotal').textContent=bks.length;
+  $('dToday').textContent=todayBks.length;
+  $('dRev').textContent=fmt(rev);
+  $('dMost').textContent=most?most[0]:'—';
+  const gc=active.filter(b=>b.paymentMethod==='gcash').reduce((s,b)=>s+b.total,0);
+  const ca=active.filter(b=>b.paymentMethod==='cash').reduce((s,b)=>s+b.total,0);
+  $('pGcash').textContent=fmt(gc); $('pCash').textContent=fmt(ca);
+  const tot=gc+ca;
+  $('gBar').style.width=(tot>0?Math.round(gc/tot*100):0)+'%';
+  $('cBar').style.width=(tot>0?Math.round(ca/tot*100):0)+'%';
+  const recent=[...bks].slice(0,5);
+  $('recentBody').innerHTML=recent.length===0?'<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">No bookings yet.</td></tr>':
+    recent.map(b=>`<tr><td><code style="color:var(--green);font-size:.78rem">${b.ref}</code></td><td>${b.fullName}</td><td>${b.courtName}</td><td>${fmtD(b.date)}</td><td>${statusBdg(b.status)}</td></tr>`).join('');
+}
+
+/* ==============================================
+   BOOKINGS
+   ============================================== */
+async function renderBookings(){
+  const isDev=sess.role==='developer';
+  let bks=await DB.getBookings();
+  const q=($('srch')||{}).value?.toLowerCase()||'';
+  const fd=($('fDate')||{}).value||'';
+  const fs=($('fStatus')||{}).value||'';
+  if(q) bks=bks.filter(b=>b.ref.toLowerCase().includes(q)||b.fullName.toLowerCase().includes(q)||b.email.toLowerCase().includes(q)||b.courtName.toLowerCase().includes(q));
+  if(fd) bks=bks.filter(b=>b.date===fd);
+  if(fs) bks=bks.filter(b=>b.status===fs);
+  $('bookBody').innerHTML=bks.length===0?'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:28px">No bookings found.</td></tr>':
+    bks.map(b=>`<tr>
+      <td><code style="color:var(--green);font-size:.76rem">${b.ref}</code></td>
+      <td><div style="font-weight:600">${b.fullName}</div><div style="font-size:.75rem;color:var(--muted)">${b.email}</div></td>
+      <td>${b.courtName}</td>
+      <td>${fmtD(b.date)}<div style="font-size:.75rem;color:var(--muted)">${b.startTime}–${b.endTime}</div></td>
+      <td>
+        <div>${fmt(b.total)}</div>
+        <div style="font-size:.73rem;color:var(--yellow);margin-top:2px">⚡ ${fmt(b.downpayment||b.total/2)} down</div>
+        ${b.gcashRef?`<div style="font-size:.7rem;color:var(--muted);margin-top:1px">Ref: <code style="color:var(--green)">${b.gcashRef}</code></div>`:''}
+      </td>
+      <td><span style="font-size:.76rem;background:var(--input);border-radius:4px;padding:2px 7px">${b.paymentMethod==='gotyme'?'GoTyme':b.paymentMethod.toUpperCase()}</span></td>
+      <td>${payStatusBdg(b.paymentStatus)}</td>
+      <td>${statusBdg(b.status)}</td>
+      <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+        ${b.gcashRef && b.status==='pending' && (b.paymentMethod==='gcash'||b.paymentMethod==='gotyme')?`<button class="btn btn-sm" style="background:rgba(200,160,96,.15);color:var(--yellow);border:1px solid rgba(200,160,96,.35);font-weight:700" onclick="openVerifyModal('${b.ref}')">🔍 Verify</button>`:''}
+        ${b.status!=='cancelled'?`<button class="btn btn-sm" style="background:rgba(74,154,220,.12);color:#5a9ad4;border:1px solid rgba(74,154,220,.3)" onclick="openRescheduleModal('${b.ref}')">📅 Reschedule</button>`:''}
+        <select class="fi" style="padding:4px 7px;font-size:.76rem;width:auto" onchange="updateStatus('${b.ref}',this.value)">
+          <option value="pending" ${b.status==='pending'?'selected':''}>Pending</option>
+          <option value="confirmed" ${b.status==='confirmed'?'selected':''}>Confirmed</option>
+          <option value="completed" ${b.status==='completed'?'selected':''}>Completed</option>
+          <option value="cancelled" ${b.status==='cancelled'?'selected':''}>Cancelled</option>
+        </select>
+        ${isDev?`<button class="btn btn-d btn-sm" onclick="delBooking('${b.ref}')">🗑️</button>`:''}
+      </div></td>
+    </tr>`).join('');
+}
+
+function clearFilters(){
+  if($('srch')) $('srch').value='';
+  if($('fDate')) $('fDate').value='';
+  if($('fStatus')) $('fStatus').value='';
+  renderBookings();
+}
+
+async function updateStatus(ref, status) {
+  await DB.updateBooking(ref, { status });
+  toast(`Status updated to ${status}.`);
+
+  // Refresh table immediately — don't wait for email
+  await renderBookings();
+  renderDash();
+
+  // Send confirmation email fire-and-forget
+  if (status === 'confirmed') {
+    DB.getBookingByRef(ref).then(bk => {
+      if (!bk?.email) return;
+      fetch(`${SUPABASE_URL.replace(/\/+$/, '')}/functions/v1/send-confirmation-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': window._supabase?.supabaseKey || '' },
+        body: JSON.stringify({
+          bookingRef: bk.ref, email: bk.email, fullName: bk.fullName,
+          courtName: bk.courtName, date: bk.date, startTime: bk.startTime,
+          endTime: bk.endTime, duration: bk.duration, total: bk.total,
+          downpayment: bk.downpayment || Math.round(bk.total * 0.5),
+          contactNumber: bk.contactNumber,
+        }),
+      }).then(r => r.json()).then(j => {
+        if (j?.ok) toast('📧 Confirmation email sent to customer!');
+      }).catch(() => {});
+    }).catch(() => {});
+  }
+}
+
+async function openVerifyModal(ref) {
+  const b = await DB.getBookingByRef(ref);
+  if (!b) { toast('Booking not found.', 'err'); return; }
+  $('vmMethod').textContent = b.paymentMethod === 'gotyme' ? 'GoTyme' : 'GCash';
+  $('vmGcashRef').textContent = b.gcashRef || '—';
+  $('vmName').textContent = b.fullName;
+  $('vmContact').textContent = b.contactNumber;
+  $('vmRef').textContent = b.ref;
+  $('vmCourt').textContent = b.courtName;
+  $('vmDate').textContent = `${fmtD(b.date)} · ${b.startTime}–${b.endTime}`;
+  $('vmAmount').textContent = fmt(b.downpayment || b.total / 2);
+  $('verifyModal').dataset.ref = ref;
+  $('verifyModal').classList.add('show');
+}
+
+async function verifyAndConfirm() {
+  const ref = $('verifyModal').dataset.ref;
+  if (!ref) return;
+  try {
+    // Update DB first — use 'paid' (safe known value) for paymentStatus
+    await DB.updateBooking(ref, { status: 'confirmed', paymentStatus: 'paid' });
+
+    // Close modal and refresh table immediately — don't wait for email
+    closeModal('verifyModal');
+    toast('✅ Payment verified & booking confirmed!');
+    await renderBookings();
+    renderDash();
+
+    // Send confirmation email fire-and-forget
+    DB.getBookingByRef(ref).then(bk => {
+      if (!bk?.email) return;
+      fetch(`${SUPABASE_URL.replace(/\/+$/, '')}/functions/v1/send-confirmation-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': window._supabase?.supabaseKey || '' },
+        body: JSON.stringify({
+          bookingRef: bk.ref, email: bk.email, fullName: bk.fullName,
+          courtName: bk.courtName, date: bk.date, startTime: bk.startTime,
+          endTime: bk.endTime, duration: bk.duration, total: bk.total,
+          downpayment: bk.downpayment || Math.round(bk.total * 0.5),
+          contactNumber: bk.contactNumber,
+        }),
+      }).then(r => r.json()).then(j => {
+        if (j?.ok) toast('📧 Confirmation email sent to customer!');
+      }).catch(() => {});
+    }).catch(() => {});
+  } catch(e) {
+    toast('Failed to confirm booking.', 'err');
+  }
+}
+
+async function rejectPayment() {
+  const ref = $('verifyModal').dataset.ref;
+  if (!ref) return;
+  if (!confirm(`Cancel booking ${ref}? This cannot be undone.`)) return;
+  try {
+    await DB.updateBooking(ref, { status: 'cancelled' });
+    closeModal('verifyModal');
+    toast('Booking cancelled — payment not verified.', 'err');
+    renderBookings();
+    renderDash();
+  } catch(e) {
+    toast('Failed to cancel booking.', 'err');
+  }
+}
+
+async function delBooking(ref){
+  if(!confirm(`Delete booking ${ref}?`)) return;
+  await DB.deleteBooking(ref);
+  toast('Booking deleted.','inf');
+  renderBookings();
+  renderDash();
+}
+
+/* ==============================================
+   RESCHEDULE
+   ============================================== */
+function fmtHour(h) {
+  if (h === 0 || h === 24) return '12:00 AM';
+  if (h === 12) return '12:00 PM';
+  const suffix = h < 12 ? 'AM' : 'PM';
+  const hh = h % 12 || 12;
+  return `${hh}:00 ${suffix}`;
+}
+
+function populateRsTimePicker(selectedHour) {
+  const sel = $('rsStartTime');
+  sel.innerHTML = '';
+  for (let h = 6; h <= 21; h++) {
+    const opt = document.createElement('option');
+    opt.value = h;
+    opt.textContent = fmtHour(h);
+    if (h === selectedHour) opt.selected = true;
+    sel.appendChild(opt);
+  }
+  updateRsEndTime();
+}
+
+function updateRsEndTime() {
+  const start = parseInt($('rsStartTime').value);
+  const dur = parseInt($('rsDuration').value);
+  $('rsEndTimeDisplay').textContent = fmtHour(start + dur);
+}
+
+async function openRescheduleModal(ref) {
+  const b = await DB.getBookingByRef(ref);
+  if (!b) { toast('Booking not found.', 'err'); return; }
+
+  $('rsOldCourt').textContent = b.courtName;
+  $('rsOldDate').textContent = fmtD(b.date);
+  $('rsOldTime').textContent = `${b.startTime} – ${b.endTime}`;
+  $('rsName').textContent = b.fullName;
+
+  // Default to tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  $('rsNewDate').value = tomorrow.toISOString().split('T')[0];
+  $('rsNewDate').min = new Date().toISOString().split('T')[0];
+
+  // Match original start hour and duration
+  const startH = b.slots?.length ? Math.min(...b.slots) : 8;
+  const dur = Math.min(Math.max(b.duration || 2, 1), 4);
+  $('rsDuration').value = dur;
+  populateRsTimePicker(startH);
+
+  $('rsNote').value = 'Due to expected heavy rain, we have rescheduled your booking for your safety and convenience. We apologize for the inconvenience!';
+
+  $('rescheduleModal').dataset.ref = ref;
+  $('rescheduleModal').dataset.oldDate = b.date;
+  $('rescheduleModal').dataset.oldStart = b.startTime;
+  $('rescheduleModal').dataset.oldEnd = b.endTime;
+  $('rescheduleModal').classList.add('show');
+}
+
+async function saveReschedule() {
+  const ref = $('rescheduleModal').dataset.ref;
+  if (!ref) return;
+
+  const newDate = $('rsNewDate').value;
+  const startH = parseInt($('rsStartTime').value);
+  const dur = parseInt($('rsDuration').value);
+  const endH = startH + dur;
+  const note = $('rsNote').value.trim();
+
+  if (!newDate) { toast('Please select a new date.', 'err'); return; }
+  if (isNaN(startH) || isNaN(dur)) { toast('Please select a start time and duration.', 'err'); return; }
+
+  const slots = Array.from({ length: dur }, (_, i) => startH + i);
+  const newStartTime = fmtHour(startH);
+  const newEndTime = fmtHour(endH);
+
+  try {
+    await DB.updateBooking(ref, {
+      date: newDate,
+      startTime: newStartTime,
+      endTime: newEndTime,
+      duration: dur,
+      slots,
+    });
+
+    closeModal('rescheduleModal');
+    toast('📅 Booking rescheduled!');
+    await renderBookings();
+    renderDash();
+
+    // Send reschedule email fire-and-forget
+    DB.getBookingByRef(ref).then(bk => {
+      if (!bk?.email) return;
+      fetch(`${SUPABASE_URL.replace(/\/+$/, '')}/functions/v1/send-reschedule-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': window._supabase?.supabaseKey || '' },
+        body: JSON.stringify({
+          bookingRef:   bk.ref,
+          email:        bk.email,
+          fullName:     bk.fullName,
+          courtName:    bk.courtName,
+          oldDate:      $('rescheduleModal').dataset.oldDate,
+          oldStartTime: $('rescheduleModal').dataset.oldStart,
+          oldEndTime:   $('rescheduleModal').dataset.oldEnd,
+          newDate,
+          newStartTime,
+          newEndTime,
+          newDuration:  dur,
+          note,
+        }),
+      }).then(r => r.json()).then(j => {
+        if (j?.ok) toast('📧 Reschedule email sent to customer!');
+      }).catch(() => {});
+    }).catch(() => {});
+  } catch(e) {
+    toast('Failed to reschedule booking.', 'err');
+  }
+}
+
+async function exportCSV(){
+  let bks=await DB.getBookings();
+  const q=($('srch')||{}).value?.toLowerCase()||'';
+  const fd=($('fDate')||{}).value||'';
+  const fs=($('fStatus')||{}).value||'';
+  if(q) bks=bks.filter(b=>b.ref.toLowerCase().includes(q)||b.fullName.toLowerCase().includes(q));
+  if(fd) bks=bks.filter(b=>b.date===fd);
+  if(fs) bks=bks.filter(b=>b.status===fs);
+  const h=['Ref','Name','Email','Contact','Court','Date','Start','End','Hrs','Rate','Total','Payment','Status','Created'];
+  const rows=bks.map(b=>[b.ref,b.fullName,b.email,b.contactNumber,b.courtName,b.date,b.startTime,b.endTime,b.duration,b.rate,b.total,b.paymentMethod,b.status,b.createdAt]);
+  const csv=[h,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`picklehub_bookings_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  toast('CSV exported!');
+}
+
+/* ==============================================
+   COURTS
+   ============================================== */
+async function renderCourts(){
+  await renderHours();
+  await loadPricingTiers();
+  await renderPaymentSettings();
+  const courts=await DB.getCourts();
+  $('courtBody').innerHTML=courts.map(c=>`<tr>
+    <td>
+      ${c.photo?`<img src="${c.photo}" alt="${c.name}" style="width:60px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--border);vertical-align:middle;margin-right:8px;display:inline-block;"/>`:
+        `<span style="display:inline-block;width:44px;height:44px;background:var(--input);border:1px solid var(--border);border-radius:6px;text-align:center;line-height:44px;font-size:1.2rem;vertical-align:middle;margin-right:8px;">🏟️</span>`}
+      <strong style="vertical-align:middle">${c.name}</strong>
+    </td>
+    <td style="font-size:.82rem;color:var(--muted)">${c.desc}</td>
+    <td>${fmt(c.rate)}/hr</td>
+    <td>${c.blocked?'<span class="bdg bdg-x">Maintenance</span>':'<span class="bdg bdg-c">Available</span>'}</td>
+    <td><div style="display:flex;gap:6px">
+      <button class="btn btn-g btn-sm" onclick="openCourtModal('${c.id}')">✏️ Edit</button>
+      <button class="btn btn-sm" style="background:${c.blocked?'rgba(0,200,83,.12);color:var(--green)':'rgba(255,214,0,.12);color:var(--yellow)'}" onclick="toggleBlock('${c.id}')">${c.blocked?'✅ Unblock':'🔒 Block'}</button>
+      <button class="btn btn-d btn-sm" onclick="delCourt('${c.id}')">🗑️</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function openCourtModal(id){
+  const c=id?(await DB.getCourts()).find(x=>x.id===id):null;
+  $('cmTitle').textContent=c?'EDIT COURT':'ADD COURT';
+  $('cmId').value=c?c.id:'';
+  $('cmName').value=c?c.name:'';
+  $('cmDesc').value=c?c.desc:'';
+  $('cmRate').value=c?c.rate:'';
+  // Photo
+  const photo=c?.photo||'';
+  $('cmPhoto').value=photo;
+  $('cmPhotoUrl').value=photo.startsWith('http')?photo:'';
+  $('cmPhotoFile').value='';
+  const prev=$('cmPhotoPreview');
+  if(photo){prev.src=photo;prev.style.display='block';}
+  else{prev.src='';prev.style.display='none';}
+  $('courtModal').classList.add('show');
+}
+
+function handleCourtPhoto(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const data=ev.target.result;
+    $('cmPhoto').value=data;
+    $('cmPhotoUrl').value='';
+    const prev=$('cmPhotoPreview');
+    prev.src=data;
+    prev.style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function previewPhotoUrl(){
+  const url=$('cmPhotoUrl').value.trim();
+  $('cmPhoto').value=url;
+  const prev=$('cmPhotoPreview');
+  if(url){prev.src=url;prev.style.display='block';}
+  else{prev.src='';prev.style.display='none';}
+}
+
+async function saveCourt(){
+  const id=$('cmId').value;
+  const name=$('cmName').value.trim();
+  const desc=$('cmDesc').value.trim();
+  const rate=parseFloat($('cmRate').value);
+  const photo=$('cmPhoto').value||null;
+  if(!name||!rate||isNaN(rate)){toast('Fill all fields.','err');return;}
+  const court = id
+    ? { ...(await DB.getCourts()).find(c=>c.id===id), name, desc, rate, photo }
+    : { id:'c'+Date.now(), name, desc, rate, blocked:false, feats:[], photo };
+  await DB.saveCourt(court);
+  closeModal('courtModal');
+  await renderCourts();
+  toast(id?'Court updated!':'Court added!');
+}
+
+async function toggleBlock(id){
+  const courts=await DB.getCourts();
+  const c=courts.find(x=>x.id===id);
+  if(!c) return;
+  c.blocked=!c.blocked;
+  await DB.saveCourt(c);
+  await renderCourts();
+  toast(c.blocked?'Court blocked.':'Court unblocked.','inf');
+}
+
+async function delCourt(id){
+  if(!confirm('Delete this court?'))return;
+  await DB.deleteCourt(id);
+  await renderCourts();
+  toast('Court deleted.','inf');
+}
+
+/* ==============================================
+   OPERATING HOURS
+   ============================================== */
+function fmtH(h) {
+  if (h === 0)  return '12:00 AM (Midnight)';
+  if (h === 24) return '12:00 AM (Next Day / Midnight)';
+  return `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`;
+}
+
+async function renderHours() {
+  const settings = await DB.getSettings();
+  const openHr  = parseInt(settings.open_hour  || '6');
+  const closeHr = parseInt(settings.close_hour || '22');
+
+  const openSel  = $('ohOpen');
+  const closeSel = $('ohClose');
+  openSel.innerHTML  = '';
+  closeSel.innerHTML = '';
+
+  // Open: 12:00 AM (0) → 11:00 PM (23)
+  for (let h = 0; h <= 23; h++) {
+    openSel.innerHTML += `<option value="${h}" ${h === openHr ? 'selected' : ''}>${fmtH(h)}</option>`;
+  }
+  // Close: 1:00 AM (1) → 12:00 AM next day (24) — allows full 24-hr operation
+  for (let h = 1; h <= 24; h++) {
+    closeSel.innerHTML += `<option value="${h}" ${h === closeHr ? 'selected' : ''}>${fmtH(h)}</option>`;
+  }
+
+  updateHoursSummary(openHr, closeHr);
+}
+
+function updateHoursSummary(openHr, closeHr) {
+  const el = $('ohSummary');
+  const totalHrs = closeHr - openHr;
+  if (totalHrs > 0) {
+    el.style.display = 'block';
+    el.innerHTML = `⏰ Courts open <strong style="color:var(--green)">${fmtH(openHr)} – ${fmtH(closeHr)}</strong> &nbsp;·&nbsp; <strong style="color:var(--green)">${totalHrs}</strong> hour${totalHrs !== 1 ? 's' : ''}/day &nbsp;·&nbsp; ${totalHrs} bookable slots per court`;
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+async function saveHours() {
+  const openHr  = parseInt($('ohOpen').value);
+  const closeHr = parseInt($('ohClose').value);
+  if (closeHr <= openHr) { toast('Close time must be later than open time.', 'err'); return; }
+  if (closeHr - openHr < 1) { toast('Must have at least 1 hour of operation.', 'err'); return; }
+  try {
+    await DB.saveSetting('open_hour',  String(openHr));
+    await DB.saveSetting('close_hour', String(closeHr));
+    updateHoursSummary(openHr, closeHr);
+    toast(`Hours saved: ${fmtH(openHr)} – ${fmtH(closeHr)}`);
+  } catch(e) {
+    toast('Failed to save hours.', 'err');
+  }
+}
+
+/* ==============================================
+   PRICING TIERS
+   ============================================== */
+let adminTiers = [];
+
+async function loadPricingTiers() {
+  const settings = await DB.getSettings();
+  if (settings.pricing_tiers) {
+    try { adminTiers = JSON.parse(settings.pricing_tiers); } catch(e) {}
+  }
+  if (!adminTiers.length) {
+    adminTiers = [
+      { from: 6,  to: 16, rate: 150 },
+      { from: 16, to: 24, rate: 250 },
+      { from: 0,  to: 4,  rate: 300 },
+    ];
+  }
+  renderTiersUI();
+}
+
+function tierFmtH(h) {
+  if (h === 0 || h === 24) return '12:00 AM';
+  return `${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}`;
+}
+
+function renderTiersUI() {
+  const c = $('tiersBody');
+  if (!c) return;
+  if (!adminTiers.length) {
+    c.innerHTML = '<p style="color:var(--muted);font-size:.84rem;padding:8px 0">No tiers yet. Click "+ Add Tier".</p>';
+    return;
+  }
+  const hOpts = n => Array.from({length:25},(_,i)=>`<option value="${i}"${i===n?' selected':''}>${tierFmtH(i)}</option>`).join('');
+  c.innerHTML = adminTiers.map((t,i) => `
+    <div class="tier-row" data-idx="${i}" style="display:flex;gap:10px;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;padding:12px 14px;background:var(--input);border:1px solid var(--border);border-radius:9px">
+      <div>
+        <label class="fl">From</label>
+        <select class="fi tier-from" style="width:auto;min-width:115px">${hOpts(t.from)}</select>
+      </div>
+      <div>
+        <label class="fl">To</label>
+        <select class="fi tier-to" style="width:auto;min-width:115px">${hOpts(t.to)}</select>
+      </div>
+      <div>
+        <label class="fl">₱ Rate / hour</label>
+        <input type="number" class="fi tier-rate" style="width:110px" value="${t.rate}" min="0" step="10" />
+      </div>
+      <button class="btn btn-d btn-sm" onclick="removeTier(${i})" style="margin-bottom:1px">🗑️ Remove</button>
+    </div>`).join('');
+}
+
+function addTierRow() {
+  adminTiers.push({ from: 6, to: 22, rate: 150 });
+  renderTiersUI();
+}
+
+function removeTier(idx) {
+  adminTiers.splice(idx, 1);
+  renderTiersUI();
+}
+
+async function savePricingTiers() {
+  const rows = document.querySelectorAll('.tier-row');
+  const tiers = [];
+  let valid = true;
+  rows.forEach(row => {
+    const from = parseInt(row.querySelector('.tier-from').value);
+    const to   = parseInt(row.querySelector('.tier-to').value);
+    const rate = parseFloat(row.querySelector('.tier-rate').value);
+    if (isNaN(from) || isNaN(to) || isNaN(rate) || rate < 0 || from === to) { valid = false; return; }
+    tiers.push({ from, to, rate });
+  });
+  if (!valid) { toast('Check your tier values — From and To cannot be the same.', 'err'); return; }
+  try {
+    await DB.saveSetting('pricing_tiers', JSON.stringify(tiers));
+    adminTiers = tiers;
+    toast(`✓ ${tiers.length} pricing tier${tiers.length!==1?'s':''} saved!`);
+  } catch(e) {
+    toast('Failed to save pricing tiers.', 'err');
+  }
+}
+
+/* ==============================================
+   PAYMENT SETTINGS
+   ============================================== */
+async function renderPaymentSettings() {
+  const settings = await DB.getSettings();
+  const cashOn = settings.payment_method_cash !== '0';
+  const gcashOn = settings.payment_method_gcash !== '0';
+  const gotymeOn = settings.payment_method_gotyme !== '0';
+
+  $('payMethodCashOn').checked = cashOn;
+  $('payMethodGcashOn').checked = gcashOn;
+  $('payMethodGotymeOn').checked = gotymeOn;
+
+  if ($('gcashNumInput')) $('gcashNumInput').value = settings.gcash_merchant_number || '';
+  if ($('gcashNameInput')) $('gcashNameInput').value = settings.gcash_merchant_name || '';
+  if ($('gotymeNameInput')) $('gotymeNameInput').value = settings.gotyme_merchant_name || '';
+
+  const gcashQr = settings.gcash_qr_image || '';
+  if (gcashQr && $('gcashQrPreview')) {
+    $('gcashQrPreview').src = gcashQr;
+    $('gcashQrPreviewWrap').style.display = '';
+  }
+  const gotymeQr = settings.gotyme_qr_image || '';
+  if (gotymeQr && $('gotymeQrPreview')) {
+    $('gotymeQrPreview').src = gotymeQr;
+    $('gotymeQrPreviewWrap').style.display = '';
+  }
+
+  const summaryParts = [`Methods: ${(cashOn?'Cash ':'')}${(gcashOn?'GCash ':'')}${(gotymeOn?'GoTyme':'')}`.trim() || 'none'];
+  $('paySettingsSummary').textContent = summaryParts.join(' • ');
+}
+
+function handleQrUpload(type, e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const data = ev.target.result;
+    if (type === 'gcash') {
+      $('gcashQrPreview').src = data;
+      $('gcashQrPreviewWrap').style.display = '';
+    } else {
+      $('gotymeQrPreview').src = data;
+      $('gotymeQrPreviewWrap').style.display = '';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function savePaymentSettings() {
+  const cashOn = $('payMethodCashOn').checked;
+  const gcashOn = $('payMethodGcashOn').checked;
+  const gotymeOn = $('payMethodGotymeOn').checked;
+
+  if (!cashOn && !gcashOn && !gotymeOn) {
+    toast('Enable at least one payment method.', 'err');
+    return;
+  }
+
+  try {
+    await DB.saveSetting('payment_method_cash', cashOn ? '1' : '0');
+    await DB.saveSetting('payment_method_gcash', gcashOn ? '1' : '0');
+    await DB.saveSetting('payment_method_gotyme', gotymeOn ? '1' : '0');
+
+    const gcashNum = $('gcashNumInput')?.value.trim() || '';
+    const gcashName = $('gcashNameInput')?.value.trim() || '';
+    const gotymeName = $('gotymeNameInput')?.value.trim() || '';
+    if (gcashNum) await DB.saveSetting('gcash_merchant_number', gcashNum);
+    if (gcashName) await DB.saveSetting('gcash_merchant_name', gcashName);
+    if (gotymeName) await DB.saveSetting('gotyme_merchant_name', gotymeName);
+
+    // Save QR images (base64 data URLs)
+    const gcashQrSrc = $('gcashQrPreview')?.src || '';
+    const gotymeQrSrc = $('gotymeQrPreview')?.src || '';
+    if (gcashQrSrc && gcashQrSrc.startsWith('data:')) await DB.saveSetting('gcash_qr_image', gcashQrSrc);
+    if (gotymeQrSrc && gotymeQrSrc.startsWith('data:')) await DB.saveSetting('gotyme_qr_image', gotymeQrSrc);
+
+    await renderPaymentSettings();
+    toast('✅ Payment settings saved!');
+  } catch(e) {
+    toast('Failed to save payment settings.', 'err');
+  }
+}
+
+/* ==============================================
+   ACCOUNTS
+   ============================================== */
+async function renderAccounts(){
+  const accs=(await Auth.getAll()).filter(a=>a.id!==sess.id);
+  $('accBody').innerHTML=accs.length===0?'<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">No other accounts.</td></tr>':
+    accs.map(a=>`<tr>
+      <td><strong>${a.fullName}</strong></td>
+      <td>${a.username}</td>
+      <td>${a.email}</td>
+      <td><span class="bdg ${a.role==='developer'?'bdg-c':'bdg-p'}">${a.role}</span></td>
+      <td><div style="display:flex;gap:6px">
+        <button class="btn btn-g btn-sm" onclick="openAccModal('${a.id}')">✏️ Edit</button>
+        <button class="btn btn-d btn-sm" onclick="delAcc('${a.id}')">🗑️</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+async function openAccModal(id){
+  const a=id?(await Auth.getAll()).find(x=>x.id===id):null;
+  $('amTitle').textContent=a?'EDIT ACCOUNT':'ADD MANAGER';
+  $('amId').value=a?a.id:'';
+  $('amFull').value=a?a.fullName:'';
+  $('amUser').value=a?a.username:'';
+  $('amEmail').value=a?a.email:'';
+  $('amPass').value='';
+  $('accModal').classList.add('show');
+}
+
+async function saveAcc(){
+  const id=$('amId').value;
+  const fullName=$('amFull').value.trim();
+  const username=$('amUser').value.trim();
+  const email=$('amEmail').value.trim();
+  const password=$('amPass').value;
+  if(!fullName||!username||!email){toast('Fill required fields.','err');return;}
+  if(id){
+    const d={fullName,username,email};if(password)d.password=password;
+    const r=await Auth.update(id,d);
+    if(!r.ok){toast('Update failed.','err');return;}
+    toast('Account updated!');
+  } else {
+    if(!password){toast('Password required.','err');return;}
+    const r=await Auth.add({fullName,username,email,password});
+    if(!r.ok){toast(r.msg,'err');return;}
+    toast('Manager added!');
+  }
+  closeModal('accModal');
+  await renderAccounts();
+}
+
+async function delAcc(id){
+  if(!confirm('Delete this account?'))return;
+  await Auth.del(id);
+  await renderAccounts();
+  toast('Account deleted.','inf');
+}
+
+/* ==============================================
+   BLOCKED DATES
+   ============================================== */
+async function renderBlocked(){
+  const dates=await DB.getBlockedDates();
+  $('blkList').innerHTML=dates.length===0?'<p style="color:var(--muted);font-style:italic">No blocked dates.</p>':
+    dates.map(d=>`<div class="blk-item"><span>📅 ${fmtD(d)}</span><button class="btn btn-d btn-sm" onclick="removeBlocked('${d}')">Remove</button></div>`).join('');
+}
+
+async function addBlocked(){
+  const v=$('newBlk').value;
+  if(!v){toast('Pick a date.','err');return;}
+  const dates=await DB.getBlockedDates();
+  if(dates.includes(v)){toast('Already blocked.','inf');return;}
+  await DB.addBlockedDate(v);
+  $('newBlk').value='';
+  await renderBlocked();
+  toast('Date blocked.');
+}
+
+async function removeBlocked(d){
+  await DB.removeBlockedDate(d);
+  await renderBlocked();
+  toast('Date unblocked.','inf');
+}
+
+/* ==============================================
+   INIT
+   ============================================== */
+function logout(){ Auth.logout(); }
+
+document.addEventListener('DOMContentLoaded', async ()=>{
+  // Verify real Supabase Auth session — not just sessionStorage
+  const { data: authData } = await _supabase.auth.getUser();
+  if (!authData.user) { window.location.href = 'login.html'; return; }
+
+  // If sessionStorage was cleared (tab restore, refresh, etc.) rebuild it from auth
+  if (!Auth.getSession()) {
+    const { data: acc } = await _supabase.from('accounts').select('*').eq('email', authData.user.email).single();
+    const session = acc
+      ? { ...rowToAccount(acc), loginAt: new Date().toISOString() }
+      : { id: authData.user.id, email: authData.user.email, role: 'admin', fullName: 'Admin', loginAt: new Date().toISOString() };
+    sessionStorage.setItem('pb_session', JSON.stringify(session));
+  }
+
+  sess = Auth.requireAuth();
+  if (!sess) return;
+
+  // Dark mode
+  const dk=localStorage.getItem('pb_dark')!=='light';
+  if(!dk)document.body.classList.add('light');
+  const tog=$('dkTog'); tog.checked=dk;
+  tog.addEventListener('change',()=>{document.body.classList.toggle('light',!tog.checked);localStorage.setItem('pb_dark',tog.checked?'dark':'light');});
+
+  // User info
+  $('uName').textContent=sess.fullName;
+  $('uEmail').textContent=sess.email;
+  $('avt').textContent=sess.fullName.charAt(0).toUpperCase();
+  $('uRole').textContent=sess.role==='developer'?'Developer':'Manager';
+  $('uRole').className='role-bdg '+(sess.role==='developer'?'r-dev':'r-mgr');
+
+  // Role-based visibility
+  const isDev=sess.role==='developer';
+  document.querySelectorAll('.dev-only').forEach(el=>el.style.display=isDev?'':'none');
+
+  // Modal close on overlay click
+  document.querySelectorAll('.overlay').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('show');}));
+
+  await renderDash();
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+</body>
+</html>
