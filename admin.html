@@ -1004,10 +1004,14 @@ async function saveCourt(){
   const court = id
     ? { ...(await DB.getCourts()).find(c=>c.id===id), name, desc, rate, photo }
     : { id:'c'+Date.now(), name, desc, rate, blocked:false, feats:[], photo };
-  await DB.saveCourt(court);
-  closeModal('courtModal');
-  await renderCourts();
-  toast(id?'Court updated!':'Court added!');
+  try {
+    await DB.saveCourt(court);
+    closeModal('courtModal');
+    await renderCourts();
+    toast(id?'Court updated!':'Court added!');
+  } catch(err) {
+    toast('Failed to save court: ' + (err?.message || String(err)), 'err');
+  }
 }
 
 async function toggleBlock(id){
