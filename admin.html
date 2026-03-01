@@ -159,7 +159,7 @@ tr:hover td{background:rgba(0,200,83,.025);}
 <aside class="sidebar" id="sidebar">
   <div class="sb-head">
     <div class="logo">
-      <img class="logo-img" src="f6b5eb3c-a6b6-49ce-981e-d9b127b67ba3.jpg" alt="Court Logo"/>
+      <img class="logo-img" src="f6b5eb3c-a6b6-49ce-981e-d9b127b67ba3.jpg" alt="Your Court Name"/>
       <span class="logo-tx">
         <span class="logo-name">Your Court Name</span>
         <span class="logo-sub">Your Location</span>
@@ -343,11 +343,11 @@ tr:hover td{background:rgba(0,200,83,.025);}
           <div class="frow" style="gap:10px;margin-bottom:10px;">
             <div class="fg" style="margin:0;flex:1">
               <label class="fl">GCash Number</label>
-              <input type="text" class="fi" id="gcashNumInput" placeholder="e.g. 0935 935 5010" />
+              <input type="text" class="fi" id="gcashNumInput" placeholder="e.g. YOUR_GCASH_NUMBER" />
             </div>
             <div class="fg" style="margin:0;flex:1">
               <label class="fl">Account Name</label>
-              <input type="text" class="fi" id="gcashNameInput" placeholder="e.g. Your Court Name" />
+              <input type="text" class="fi" id="gcashNameInput" placeholder="e.g. Your Court Name Your Location" />
             </div>
           </div>
           <div class="fg" style="margin:0">
@@ -369,7 +369,7 @@ tr:hover td{background:rgba(0,200,83,.025);}
           <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--yellow);margin-bottom:10px;">🏦 GoTyme</div>
           <div class="fg" style="margin-bottom:10px">
             <label class="fl">Account Name</label>
-            <input type="text" class="fi" id="gotymeNameInput" placeholder="e.g. Your Court Name" />
+            <input type="text" class="fi" id="gotymeNameInput" placeholder="e.g. Your Court Name Your Location" />
           </div>
           <div class="fg" style="margin:0">
             <label class="fl">GoTyme QR Code Image</label>
@@ -706,7 +706,8 @@ async function updateStatus(ref, status) {
         }),
       }).then(r => r.json()).then(j => {
         if (j?.ok) toast('📧 Confirmation email sent to customer!');
-      }).catch(() => {});
+        else toast(`⚠️ Booking confirmed but email failed: ${j?.error || 'unknown error'}`, 'err');
+      }).catch(err => toast(`⚠️ Booking confirmed but email failed: ${err.message}`, 'err'));
     }).catch(() => {});
   }
 }
@@ -754,7 +755,8 @@ async function verifyAndConfirm() {
         }),
       }).then(r => r.json()).then(j => {
         if (j?.ok) toast('📧 Confirmation email sent to customer!');
-      }).catch(() => {});
+        else toast(`⚠️ Booking confirmed but email failed: ${j?.error || 'unknown error'}`, 'err');
+      }).catch(err => toast(`⚠️ Booking confirmed but email failed: ${err.message}`, 'err'));
     }).catch(() => {});
   } catch(e) {
     toast('Failed to confirm booking.', 'err');

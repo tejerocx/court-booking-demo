@@ -3,10 +3,8 @@
 // Replace these with your actual project credentials.
 // Find them at: Supabase Dashboard → Project Settings → API
 // =============================================
-// ⚠️  REPLACE THESE WITH YOUR OWN SUPABASE PROJECT CREDENTIALS
-// Get them at: https://supabase.com → Your Project → Project Settings → API
-const SUPABASE_URL  = 'https://YOUR_PROJECT_REF.supabase.co';   // e.g. https://abcxyz.supabase.co
-const SUPABASE_ANON_KEY = 'YOUR_ANON_PUBLIC_KEY';               // starts with eyJ...
+const SUPABASE_URL  = 'https://YOUR_PROJECT_REF.supabase.co';        // e.g. https://abcxyz.supabase.co
+const SUPABASE_ANON_KEY = 'YOUR_ANON_PUBLIC_KEY'; // anon / public key
 
 // Initialize Supabase client (uses UMD global loaded from CDN)
 const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

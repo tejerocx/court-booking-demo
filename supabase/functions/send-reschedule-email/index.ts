@@ -102,7 +102,7 @@ function buildHtml(p: Payload): string {
 
       <!-- Footer -->
       <tr><td style="background:#f4faf4;padding:18px 36px;text-align:center;border-top:1px solid #d8ead8;">
-        <div style="font-size:.75rem;color:#8a9a8a;">Smash Grove · Your Location</div>
+        <div style="font-size:.75rem;color:#8a9a8a;">Your Court Name · Your Location</div>
         <div style="font-size:.72rem;color:#aabcaa;margin-top:4px;">This is an automated notification email.</div>
       </td></tr>
 
