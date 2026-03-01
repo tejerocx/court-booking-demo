@@ -1004,13 +1004,20 @@ async function saveCourt(){
   const court = id
     ? { ...(await DB.getCourts()).find(c=>c.id===id), name, desc, rate, photo }
     : { id:'c'+Date.now(), name, desc, rate, blocked:false, feats:[], photo };
+  const saveBtn = document.querySelector('#courtModal .btn-p');
+  if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Saving…';}
   try {
     await DB.saveCourt(court);
     closeModal('courtModal');
     await renderCourts();
     toast(id?'Court updated!':'Court added!');
   } catch(err) {
-    toast('Failed to save court: ' + (err?.message || String(err)), 'err');
+    const msg = err?.message || err?.code || JSON.stringify(err) || 'Unknown error';
+    console.error('saveCourt error:', err);
+    toast('Save failed: ' + msg, 'err');
+    alert('Court save failed:\n\n' + msg + '\n\nCheck the browser console for details (F12 → Console).');
+  } finally {
+    if(saveBtn){saveBtn.disabled=false;saveBtn.innerHTML='💾 Save';}
   }
 }
 
