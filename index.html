@@ -1526,6 +1526,7 @@ let closeHour = 22;
 let cachedBookedSlots = new Set(); // cached after renderSlots() — avoids re-fetching on every click
 let payFull = false; // false = 50% downpayment, true = 100% full payment
 let cardSel   = { courtId: null, date: null, slots: [], rate: 0 };
+let _courts   = []; // cached court list for per-court rate lookups
 let pricingTiers = [
   { from: 6,  to: 16, rate: 150 },
   { from: 16, to: 24, rate: 250 },
@@ -1711,6 +1712,15 @@ function getRateForHour(h) {
   return pricingTiers.length > 0 ? Math.min(...pricingTiers.map(t => t.rate)) : 0;
 }
 
+function getCourtRate(c, h) {
+  const tiers = c?.rateSchedule && c.rateSchedule.length ? c.rateSchedule : pricingTiers;
+  for (const t of tiers) {
+    const inRange = t.from < t.to ? (h >= t.from && h < t.to) : (h >= t.from || h < t.to);
+    if (inRange) return t.rate;
+  }
+  return tiers.length > 0 ? Math.min(...tiers.map(t => t.rate)) : (c?.rate || 0);
+}
+
 const fmtTs = h => h === 24 ? '12A' : `${h % 12 || 12}${h < 12 ? 'A' : 'P'}`;
 
 /* =============================================
@@ -1762,7 +1772,8 @@ function updateCardUI(courtId) {
     const mn    = Math.min(...cardSel.slots);
     const mx    = Math.max(...cardSel.slots);
     const hrs   = cardSel.slots.length;
-    const total = cardSel.slots.reduce((s, h) => s + getRateForHour(h), 0);
+    const selCourt = _courts.find(c => c.id === courtId);
+    const total = cardSel.slots.reduce((s, h) => s + getCourtRate(selCourt, h), 0);
     sum.textContent = `${fmtT(mn)} – ${fmtT(mx+1)} · ${hrs} hr${hrs>1?'s':''} · ${fmt(total)}`;
     bar.style.display = 'flex';
   } else {
@@ -1862,6 +1873,7 @@ async function ensureCourt(courtId) {
    ============================================= */
 async function renderCourts() {
   const [courts, bookings] = await Promise.all([DB.getCourts(), DB.getBookings()]);
+  _courts = courts;
   const today = todayStr();
   const curHour = nowHour();
   const courtsGrid = $('courtsGrid');
@@ -1884,7 +1896,8 @@ async function renderCourts() {
     const availBadgeTxt = blk ? '🔧 Maintenance' : availToday > 0 ? `⚡ ${availToday} available` : '⛔ Fully booked';
 
     const rateRange = (() => {
-      const r = pricingTiers.map(t => t.rate);
+      const tiers = c.rateSchedule && c.rateSchedule.length ? c.rateSchedule : pricingTiers;
+      const r = tiers.map(t => t.rate);
       return r.length ? (Math.min(...r) === Math.max(...r) ? `₱${Math.min(...r)}/hr` : `₱${Math.min(...r)}–₱${Math.max(...r)}/hr`) : `${fmt(c.rate)}/hr`;
     })();
 
@@ -1900,7 +1913,7 @@ async function renderCourts() {
           const timeRange = `${fmtT(h)} – ${fmtT(h+1)}`;
           if (isPast_)   return `<div class="cc-slot-btn past-slot"><div class="csl-time">${timeRange}</div><div class="csl-tag">Done</div></div>`;
           if (isBooked_) return `<div class="cc-slot-btn taken"><div class="csl-time">${timeRange}</div><div class="csl-name">👤 ${slotNameMap[h]}</div></div>`;
-          return `<div class="cc-slot-btn" data-h="${h}" onclick="event.stopPropagation(); toggleCardSlot('${c.id}','${today}',${h})"><div class="csl-time">${timeRange}</div><div class="csl-price">₱${getRateForHour(h)}</div></div>`;
+          return `<div class="cc-slot-btn" data-h="${h}" onclick="event.stopPropagation(); toggleCardSlot('${c.id}','${today}',${h})"><div class="csl-time">${timeRange}</div><div class="csl-price">₱${getCourtRate(c, h)}</div></div>`;
         }).join('');
 
     return `
