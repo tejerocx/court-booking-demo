@@ -186,13 +186,41 @@ window.DB = {
   },
 
   async saveCourt(court) {
-    const { error } = await _sb.from('courts').upsert(courtToRow(court));
-    if (error) { console.error('saveCourt:', error); throw error; }
+    // Use explicit auth header (same pattern as _invokePaymentSessionFallback)
+    // because the Supabase JS auto-auth header is unreliable in some environments.
+    const { data: { session } } = await _sb.auth.getSession();
+    const token = session?.access_token;
+    if (!token) throw new Error('Session expired — please refresh the page and log in again.');
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/courts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${token}`,
+        'Prefer': 'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify(courtToRow(court)),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: `HTTP ${res.status}` }));
+      const msg = err.message || err.details || err.hint || JSON.stringify(err);
+      const e = new Error(msg); e.code = err.code;
+      console.error('saveCourt:', err); throw e;
+    }
   },
 
   async deleteCourt(id) {
-    const { error } = await _sb.from('courts').delete().eq('id', id);
-    if (error) console.error('deleteCourt:', error);
+    const { data: { session } } = await _sb.auth.getSession();
+    const token = session?.access_token;
+    if (!token) throw new Error('Session expired — please refresh the page and log in again.');
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/courts?id=eq.${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) console.error('deleteCourt HTTP', res.status);
   },
 
   // ---- BOOKINGS ----
@@ -298,8 +326,25 @@ window.DB = {
   },
 
   async saveSetting(key, value) {
-    const { error } = await _sb.from('settings').upsert({ key, value });
-    if (error) { console.error('saveSetting:', error); throw error; }
+    const { data: { session } } = await _sb.auth.getSession();
+    const token = session?.access_token;
+    if (!token) throw new Error('Session expired — please refresh the page and log in again.');
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/settings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${token}`,
+        'Prefer': 'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify({ key, value }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: `HTTP ${res.status}` }));
+      const msg = err.message || err.details || err.hint || JSON.stringify(err);
+      const e = new Error(msg); e.code = err.code;
+      console.error('saveSetting:', err); throw e;
+    }
   },
 
   async createPaymentSession(payload) {
