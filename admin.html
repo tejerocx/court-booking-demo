@@ -4,19 +4,21 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>CourtBook — Admin Dashboard</title>
+<link rel="icon" type="image/jpeg" href="f6b5eb3c-a6b6-49ce-981e-d9b127b67ba3.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--green:#4f7cf0;--green-dark:#2557d0;--glow:rgba(79,124,240,.22);--bg:#0b0f1a;--card:#111827;--border:#1e2a42;--text:#e8edf8;--muted:#6a80a8;--input:#151c2e;--red:#e05a4e;--yellow:#c8a060;--r:12px;}
-body.light{--bg:#dde3f0;--card:#eaeefc;--border:#bcc5d8;--text:#1a2140;--muted:#526080;--input:#dde2f2;}
+:root{--green:#4a9a4a;--green-dark:#1d5a1d;--glow:rgba(74,154,74,.22);--bg:#0d1a0d;--card:#131e13;--border:#253825;--text:#e4ede4;--muted:#7a9a7a;--input:#1a2a1a;--red:#e05a4e;--yellow:#c8a060;--r:12px;}
+body.light{--bg:#f2ede5;--card:#faf7f2;--border:#c8b898;--text:#1a2e1a;--muted:#5a7a5a;--input:#ece7de;}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
 h1,h2,h3,h4{font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 
 /* SIDEBAR */
 .sidebar{width:250px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform .3s;}
-.sb-head{padding:18px 18px 14px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(79,124,240,.1),transparent);}
+.sb-head{padding:18px 18px 14px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(74,154,74,.08),transparent);}
 .logo{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.logo-img{width:36px;height:36px;border-radius:7px;object-fit:cover;border:1.5px solid rgba(74,154,74,.35);box-shadow:0 2px 8px rgba(0,0,0,.35);flex-shrink:0;}
 .logo-tx{font-family:'Bebas Neue',sans-serif;line-height:1.15;}
 .logo-tx .logo-name{display:block;font-size:1.15rem;letter-spacing:2px;}
 .logo-tx .logo-sub{display:block;font-size:.65rem;color:var(--green);letter-spacing:1.5px;}
@@ -25,13 +27,13 @@ h1,h2,h3,h4{font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
 .u-name{font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .u-email{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .role-bdg{font-size:.63rem;font-weight:800;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;margin-top:3px;display:inline-block;}
-.r-dev{background:rgba(79,124,240,.18);color:var(--green);}
+.r-dev{background:rgba(74,154,74,.18);color:var(--green);}
 .r-mgr{background:rgba(200,160,96,.18);color:var(--yellow);}
 .sb-nav{flex:1;overflow-y:auto;padding:10px 0;}
 .nav-grp{padding:8px 18px 3px;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
 .nav-item{display:flex;align-items:center;gap:9px;padding:10px 18px;cursor:pointer;font-size:.88rem;font-weight:500;color:var(--muted);border-left:3px solid transparent;transition:all .15s;}
 .nav-item:hover{background:var(--input);color:var(--text);}
-.nav-item.on{background:rgba(79,124,240,.12);color:var(--green);border-left-color:var(--green);}
+.nav-item.on{background:rgba(0,200,83,.08);color:var(--green);border-left-color:var(--green);}
 .sb-foot{padding:14px 18px;border-top:1px solid var(--border);display:flex;gap:8px;}
 
 /* MAIN */
@@ -57,7 +59,7 @@ h1,h2,h3,h4{font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
 /* STAT CARDS */
 .stat-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-bottom:26px;}
 .sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;position:relative;overflow:hidden;}
-.sc::after{content:'';position:absolute;top:-10px;right:-10px;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,rgba(79,124,240,.1),transparent);pointer-events:none;}
+.sc::after{content:'';position:absolute;top:-10px;right:-10px;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,rgba(0,200,83,.1),transparent);pointer-events:none;}
 .sc-lbl{font-size:.76rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:7px;}
 .sc-val{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--green);line-height:1;}
 .sc-ic{position:absolute;top:14px;right:14px;font-size:1.4rem;opacity:.45;}
@@ -83,7 +85,7 @@ table{width:100%;border-collapse:collapse;}
 th{text-align:left;padding:11px 14px;font-size:.73rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);background:rgba(0,0,0,.08);}
 td{padding:11px 14px;font-size:.86rem;border-bottom:1px solid rgba(48,54,61,.5);}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:rgba(79,124,240,.04);}
+tr:hover td{background:rgba(0,200,83,.025);}
 .tbl-scroll{overflow-x:auto;}
 
 /* TOOLBAR */
@@ -103,7 +105,7 @@ tr:hover td{background:rgba(79,124,240,.04);}
 /* BADGES */
 .bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;}
 .bdg-p{background:rgba(255,214,0,.12);color:var(--yellow);}
-.bdg-c{background:rgba(79,124,240,.12);color:var(--green);}
+.bdg-c{background:rgba(0,200,83,.12);color:var(--green);}
 .bdg-d{background:rgba(128,128,255,.12);color:#8080ff;}
 .bdg-x{background:rgba(248,81,73,.12);color:var(--red);}
 
@@ -120,7 +122,7 @@ tr:hover td{background:rgba(79,124,240,.04);}
 .overlay.show{opacity:1;pointer-events:all;}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform .3s;}
 .overlay.show .modal{transform:translateY(0);}
-.m-hd{padding:18px 22px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(79,124,240,.08),transparent);display:flex;align-items:center;justify-content:space-between;}
+.m-hd{padding:18px 22px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(0,200,83,.08),transparent);display:flex;align-items:center;justify-content:space-between;}
 .m-hd h2{font-size:1.3rem;}
 .m-x{width:28px;height:28px;border:none;border-radius:7px;background:var(--input);color:var(--text);cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:background .2s;}
 .m-x:hover{background:var(--red);}
@@ -148,6 +150,47 @@ tr:hover td{background:rgba(79,124,240,.04);}
   .stat-cards{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:480px){.content{padding:14px;}.frow{grid-template-columns:1fr;}}
+
+/* ── CALENDAR VIEW ── */
+.view-toggle{display:flex;gap:6px;}
+.view-btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--input);color:var(--muted);cursor:pointer;font-size:.8rem;font-weight:600;transition:all .15s;font-family:inherit;}
+.view-btn.active{background:var(--green);border-color:var(--green);color:#000;}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.cal-title{font-size:1.05rem;font-weight:700;}
+.cal-nav-btn{background:var(--input);border:1px solid var(--border);color:var(--text);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;font-family:inherit;}
+.cal-nav-btn:hover{border-color:var(--green);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.cal-dh{text-align:center;font-size:.72rem;font-weight:700;color:var(--muted);padding:6px 0;}
+.cal-cell{min-height:72px;border-radius:8px;border:1px solid var(--border);padding:7px 6px;cursor:pointer;transition:border-color .15s,background .15s;}
+.cal-cell:hover:not(.cal-other){border-color:var(--green);background:rgba(74,154,74,.06);}
+.cal-cell.cal-other{border-color:transparent;background:rgba(255,255,255,.02);cursor:default;opacity:.3;}
+.cal-cell.cal-today{border-color:var(--green);}
+.cal-cell.cal-today .cal-dn{color:var(--green);}
+.cal-dn{font-size:.78rem;font-weight:700;margin-bottom:5px;}
+.cal-dots{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:3px;}
+.cal-dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+.cal-dot.pending{background:var(--yellow);}
+.cal-dot.confirmed{background:var(--green);}
+.cal-dot.completed{background:#4fc3f7;}
+.cal-dot.cancelled{background:var(--red);}
+.cal-count{font-size:.63rem;color:var(--muted);}
+.cal-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:.75rem;color:var(--muted);}
+.cal-legend span{display:flex;align-items:center;gap:5px;}
+@media(max-width:600px){.cal-cell{min-height:52px;padding:4px;}.cal-dn{font-size:.7rem;}.cal-dot{width:5px;height:5px;}.cal-dh{font-size:.65rem;}}
+
+/* ── REPORTS ── */
+.rp-period{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;align-items:center;}
+.rp-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.rp-bar-label{min-width:110px;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rp-bar-track{flex:1;height:10px;background:var(--border);border-radius:5px;overflow:hidden;}
+.rp-bar-fill{height:100%;border-radius:5px;transition:width .5s ease;background:var(--green);}
+.rp-bar-val{min-width:80px;text-align:right;font-size:.8rem;font-weight:700;}
+.rp-trend-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.rp-trend-month{min-width:64px;font-size:.78rem;color:var(--muted);}
+.rp-trend-track{flex:1;height:22px;background:var(--border);border-radius:5px;overflow:hidden;}
+.rp-trend-fill{height:100%;border-radius:5px;transition:width .5s ease;background:var(--green);display:flex;align-items:center;padding-left:8px;font-size:.7rem;font-weight:700;color:#0d2a00;white-space:nowrap;min-width:0;}
+.rp-trend-val{min-width:82px;text-align:right;font-size:.8rem;font-weight:700;}
+.rp-empty{font-size:.82rem;color:var(--muted);font-style:italic;padding:8px 0;}
 </style>
 </head>
 <body>
@@ -157,16 +200,10 @@ tr:hover td{background:rgba(79,124,240,.04);}
 <aside class="sidebar" id="sidebar">
   <div class="sb-head">
     <div class="logo">
-      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
-        <rect width="36" height="36" rx="10" fill="rgba(79,124,240,.18)" stroke="rgba(79,124,240,.4)" stroke-width="1.5"/>
-        <rect x="6" y="10" width="24" height="16" rx="2" stroke="#4f7cf0" stroke-width="1.5"/>
-        <line x1="18" y1="10" x2="18" y2="26" stroke="#4f7cf0" stroke-width="1" stroke-dasharray="2 2"/>
-        <circle cx="18" cy="18" r="3.5" stroke="#4f7cf0" stroke-width="1.2"/>
-        <circle cx="18" cy="18" r="1.2" fill="#4f7cf0"/>
-      </svg>
+      <img class="logo-img" src="f6b5eb3c-a6b6-49ce-981e-d9b127b67ba3.jpg" alt="CourtBook"/>
       <span class="logo-tx">
         <span class="logo-name">CourtBook</span>
-        <span class="logo-sub">Admin Dashboard</span>
+        <span class="logo-sub">Demo System</span>
       </span>
     </div>
     <div class="user-row">
@@ -183,6 +220,7 @@ tr:hover td{background:rgba(79,124,240,.04);}
     <div class="nav-grp">Overview</div>
     <div class="nav-item on" data-s="dash" onclick="goto('dash')">📊 Dashboard</div>
     <div class="nav-item" data-s="bookings" onclick="goto('bookings')">📋 Bookings</div>
+    <div class="nav-item" data-s="reports" onclick="goto('reports')">📈 Reports</div>
     <div class="nav-grp">Management</div>
     <div class="nav-item" data-s="courts" onclick="goto('courts')">🏟️ Courts</div>
     <div class="nav-item" data-s="blocked" onclick="goto('blocked')">🔒 Blocked Dates</div>
@@ -257,29 +295,102 @@ tr:hover td{background:rgba(79,124,240,.04);}
     <div id="sec-bookings" class="adm-sec">
       <div class="toolbar">
         <h2>📋 ALL BOOKINGS</h2>
-        <button class="btn btn-p btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div class="view-toggle">
+            <button id="viewBtnList" class="view-btn active" onclick="switchBookingView('list')">📋 List</button>
+            <button id="viewBtnCal" class="view-btn" onclick="switchBookingView('cal')">📅 Calendar</button>
+          </div>
+          <button class="btn btn-p btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+        </div>
       </div>
-      <div class="tbl-wrap">
-        <div class="tbl-hd">
-          <div class="filters">
-            <input type="text" id="srch" placeholder="🔍 Search name, ref, email…" oninput="renderBookings()"/>
-            <input type="date" id="fDate" onchange="renderBookings()"/>
-            <select id="fStatus" onchange="renderBookings()">
-              <option value="">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-            <button class="btn btn-g btn-sm" onclick="clearFilters()">Clear</button>
+
+      <!-- CALENDAR VIEW -->
+      <div id="calendarView" style="display:none">
+        <div class="cal-header">
+          <button class="cal-nav-btn" onclick="calNav(-1)">‹</button>
+          <span id="calTitle" class="cal-title"></span>
+          <button class="cal-nav-btn" onclick="calNav(1)">›</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend">
+          <span><span class="cal-dot pending"></span>Pending</span>
+          <span><span class="cal-dot confirmed"></span>Confirmed</span>
+          <span><span class="cal-dot completed"></span>Completed</span>
+          <span><span class="cal-dot cancelled"></span>Cancelled</span>
+        </div>
+      </div>
+
+      <!-- LIST VIEW -->
+      <div id="tableView">
+        <div class="tbl-wrap">
+          <div class="tbl-hd">
+            <div class="filters">
+              <input type="text" id="srch" placeholder="🔍 Search name, ref, email…" oninput="renderBookings()"/>
+              <input type="date" id="fDate" onchange="renderBookings()"/>
+              <select id="fStatus" onchange="renderBookings()">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <button class="btn btn-g btn-sm" onclick="clearFilters()">Clear</button>
+            </div>
+          </div>
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>Ref</th><th>Customer</th><th>Court</th><th>Schedule</th><th>Amount</th><th>Payment</th><th>Pay State</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="bookBody"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px">No bookings.</td></tr></tbody>
+            </table>
           </div>
         </div>
-        <div class="tbl-scroll">
-          <table>
-            <thead><tr><th>Ref</th><th>Customer</th><th>Court</th><th>Schedule</th><th>Amount</th><th>Payment</th><th>Pay State</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="bookBody"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px">No bookings.</td></tr></tbody>
-          </table>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="sec-reports" class="adm-sec">
+      <div class="toolbar">
+        <h2>📈 REVENUE REPORTS</h2>
+        <button class="btn btn-p btn-sm" onclick="exportReportCSV()">📥 Export CSV</button>
+      </div>
+
+      <!-- Period filter -->
+      <div class="rp-period">
+        <button class="view-btn active" id="rp-week" onclick="setReportPeriod('week')">This Week</button>
+        <button class="view-btn" id="rp-month" onclick="setReportPeriod('month')">This Month</button>
+        <button class="view-btn" id="rp-last" onclick="setReportPeriod('last')">Last Month</button>
+        <button class="view-btn" id="rp-all" onclick="setReportPeriod('all')">All Time</button>
+        <span style="display:flex;gap:6px;align-items:center;margin-left:4px">
+          <input type="date" id="rpFrom" class="fi" style="padding:5px 10px;font-size:.8rem" onchange="setReportPeriod('custom')">
+          <span style="color:var(--muted);font-size:.8rem">–</span>
+          <input type="date" id="rpTo" class="fi" style="padding:5px 10px;font-size:.8rem" onchange="setReportPeriod('custom')">
+        </span>
+      </div>
+
+      <!-- Summary cards -->
+      <div class="stat-cards" style="margin-bottom:20px">
+        <div class="sc"><div class="sc-lbl">Gross Revenue</div><div class="sc-val" id="rpGross">₱0</div><div class="sc-ic">💰</div></div>
+        <div class="sc"><div class="sc-lbl">Collected</div><div class="sc-val" id="rpCollected">₱0</div><div class="sc-ic">✅</div></div>
+        <div class="sc"><div class="sc-lbl">Pending</div><div class="sc-val" id="rpPending">₱0</div><div class="sc-ic">⏳</div></div>
+        <div class="sc"><div class="sc-lbl">Active Bookings</div><div class="sc-val" id="rpCount">0</div><div class="sc-ic">📋</div></div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="rev-grid">
+        <div class="panel">
+          <h4>Revenue by Court</h4>
+          <div id="rpCourtChart"><p class="rp-empty">No data.</p></div>
         </div>
+        <div class="panel">
+          <h4>Revenue by Payment Method</h4>
+          <div id="rpPayChart"><p class="rp-empty">No data.</p></div>
+        </div>
+      </div>
+
+      <!-- Monthly trend -->
+      <div class="panel" style="margin-top:16px">
+        <h4>Monthly Trend (Last 6 Months)</h4>
+        <div id="rpTrend"><p class="rp-empty">No data.</p></div>
       </div>
     </div>
 
@@ -347,11 +458,11 @@ tr:hover td{background:rgba(79,124,240,.04);}
           <div class="frow" style="gap:10px;margin-bottom:10px;">
             <div class="fg" style="margin:0;flex:1">
               <label class="fl">GCash Number</label>
-              <input type="text" class="fi" id="gcashNumInput" placeholder="e.g. YOUR_GCASH_NUMBER" />
+              <input type="text" class="fi" id="gcashNumInput" placeholder="e.g. 0935 935 5010" />
             </div>
             <div class="fg" style="margin:0;flex:1">
               <label class="fl">Account Name</label>
-              <input type="text" class="fi" id="gcashNameInput" placeholder="e.g. Your Court Name Your Location" />
+              <input type="text" class="fi" id="gcashNameInput" placeholder="e.g. CourtBook Demo" />
             </div>
           </div>
           <div class="fg" style="margin:0">
@@ -373,7 +484,7 @@ tr:hover td{background:rgba(79,124,240,.04);}
           <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--yellow);margin-bottom:10px;">🏦 GoTyme</div>
           <div class="fg" style="margin-bottom:10px">
             <label class="fl">Account Name</label>
-            <input type="text" class="fi" id="gotymeNameInput" placeholder="e.g. Your Court Name Your Location" />
+            <input type="text" class="fi" id="gotymeNameInput" placeholder="e.g. CourtBook Demo" />
           </div>
           <div class="fg" style="margin:0">
             <label class="fl">GoTyme QR Code Image</label>
@@ -512,9 +623,9 @@ tr:hover td{background:rgba(79,124,240,.04);}
     </div>
     <div class="m-body">
       <div style="text-align:center;margin-bottom:16px">
-        <span id="vmMethod" style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;padding:5px 18px;border-radius:20px;background:rgba(79,124,240,.1);color:var(--green);border:1px solid rgba(79,124,240,.25)">GCash</span>
+        <span id="vmMethod" style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;padding:5px 18px;border-radius:20px;background:rgba(74,154,74,.1);color:var(--green);border:1px solid rgba(74,154,74,.25)">GCash</span>
       </div>
-      <div style="background:rgba(79,124,240,.07);border:1.5px solid rgba(79,124,240,.28);border-radius:10px;padding:16px;text-align:center;margin-bottom:14px">
+      <div style="background:rgba(74,154,74,.07);border:1.5px solid rgba(74,154,74,.28);border-radius:10px;padding:16px;text-align:center;margin-bottom:14px">
         <div style="font-size:.66rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px">Payment Reference #</div>
         <div id="vmGcashRef" style="font-family:monospace;font-size:1.55rem;font-weight:800;color:var(--green);letter-spacing:2px">—</div>
         <div style="font-size:.7rem;color:var(--muted);margin-top:5px">Check your GCash/GoTyme app for this reference</div>
@@ -603,8 +714,8 @@ const fmtD=s=>{if(!s)return'—';return new Date(s+'T00:00:00').toLocaleDateStri
 function statusBdg(s){const m={pending:'bdg-p',confirmed:'bdg-c',completed:'bdg-d',cancelled:'bdg-x'};return`<span class="bdg ${m[s]||''}">${s}</span>`;}
 function payStatusBdg(s){
   const v = (s || 'unpaid').toLowerCase();
-  const label = v.replace(/_/g, ' ');
-  const cls = v === 'paid' ? 'bdg-c' : v === 'pending' ? 'bdg-p' : v === 'failed' ? 'bdg-x' : 'bdg-d';
+  const label = v === 'paid' ? 'Fully Paid' : v === 'downpayment_paid' ? 'Downpayment Paid' : v === 'for_verification' ? 'For Verification' : v === 'pending' ? 'Pending' : v === 'failed' ? 'Failed' : 'Unpaid';
+  const cls = v === 'paid' ? 'bdg-c' : v === 'downpayment_paid' ? 'bdg-p' : v === 'for_verification' ? 'bdg-p' : v === 'failed' ? 'bdg-x' : 'bdg-d';
   return `<span class="bdg ${cls}">${label}</span>`;
 }
 function toast(msg,type='ok'){const icons={ok:'✅',err:'❌',inf:'ℹ️'};const el=document.createElement('div');el.className=`toast ${type}`;el.innerHTML=`<span>${icons[type]}</span><span>${msg}</span>`;$('toasts').appendChild(el);setTimeout(()=>el.remove(),3800);}
@@ -615,14 +726,14 @@ let sess;
 /* ==============================================
    NAVIGATION
    ============================================== */
-const titles={dash:'Dashboard',bookings:'Bookings',courts:'Courts',accounts:'Accounts',blocked:'Blocked Dates'};
+const titles={dash:'Dashboard',bookings:'Bookings',reports:'Reports',courts:'Courts',accounts:'Accounts',blocked:'Blocked Dates'};
 async function goto(s){
   document.querySelectorAll('.adm-sec').forEach(el=>el.classList.remove('on'));
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('on',el.dataset.s===s));
   $('sec-'+s).classList.add('on');
   $('topTitle').textContent=titles[s]||s;
   document.getElementById('sidebar').classList.remove('open');
-  const loaders={dash:renderDash,bookings:renderBookings,courts:renderCourts,accounts:renderAccounts,blocked:renderBlocked};
+  const loaders={dash:renderDash,bookings:renderBookings,reports:renderReport,courts:renderCourts,accounts:renderAccounts,blocked:renderBlocked};
   if(loaders[s]) await loaders[s]();
 }
 
@@ -655,9 +766,29 @@ async function renderDash(){
 /* ==============================================
    BOOKINGS
    ============================================== */
+async function autoCompleteBookings(bks) {
+  const now = new Date();
+  const toComplete = bks.filter(b => {
+    if (b.status !== 'confirmed') return false;
+    const end = new Date(`${b.date}T${b.endTime.replace(' AM','').replace(' PM','')}:00`);
+    // Parse 12hr end time properly
+    const [time, period] = b.endTime.split(' ');
+    let [hh] = time.split(':').map(Number);
+    if (period === 'PM' && hh !== 12) hh += 12;
+    if (period === 'AM' && hh === 12) hh = 0;
+    const endDt = new Date(`${b.date}T${String(hh).padStart(2,'0')}:00:00`);
+    return endDt < now;
+  });
+  if (toComplete.length > 0) {
+    await Promise.all(toComplete.map(b => DB.updateBooking(b.ref, { status: 'completed' })));
+  }
+}
+
 async function renderBookings(){
   const isDev=sess.role==='developer';
   let bks=await DB.getBookings();
+  await autoCompleteBookings(bks);
+  bks=await DB.getBookings(); // reload after auto-complete
   const q=($('srch')||{}).value?.toLowerCase()||'';
   const fd=($('fDate')||{}).value||'';
   const fs=($('fStatus')||{}).value||'';
@@ -676,7 +807,14 @@ async function renderBookings(){
         ${b.gcashRef?`<div style="font-size:.7rem;color:var(--muted);margin-top:1px">Ref: <code style="color:var(--green)">${b.gcashRef}</code></div>`:''}
       </td>
       <td><span style="font-size:.76rem;background:var(--input);border-radius:4px;padding:2px 7px">${b.paymentMethod==='gotyme'?'GoTyme':b.paymentMethod.toUpperCase()}</span></td>
-      <td>${payStatusBdg(b.paymentStatus)}</td>
+      <td>
+        <select class="fi" style="padding:4px 7px;font-size:.76rem;width:auto" onchange="updatePaymentStatus('${b.ref}',this.value)">
+          <option value="unpaid" ${(!b.paymentStatus||b.paymentStatus==='unpaid')?'selected':''}>Unpaid</option>
+          <option value="downpayment_paid" ${b.paymentStatus==='downpayment_paid'?'selected':''}>Downpayment Paid</option>
+          <option value="paid" ${b.paymentStatus==='paid'?'selected':''}>Fully Paid</option>
+          <option value="for_verification" ${b.paymentStatus==='for_verification'?'selected':''}>For Verification</option>
+        </select>
+      </td>
       <td>${statusBdg(b.status)}</td>
       <td><div style="display:flex;gap:5px;flex-wrap:wrap">
         ${b.gcashRef && b.status==='pending' && (b.paymentMethod==='gcash'||b.paymentMethod==='gotyme')?`<button class="btn btn-sm" style="background:rgba(200,160,96,.15);color:var(--yellow);border:1px solid rgba(200,160,96,.35);font-weight:700" onclick="openVerifyModal('${b.ref}')">🔍 Verify</button>`:''}
@@ -699,6 +837,88 @@ function clearFilters(){
   renderBookings();
 }
 
+/* ── CALENDAR VIEW ── */
+let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
+
+function switchBookingView(mode){
+  const isCal = mode==='cal';
+  $('viewBtnCal').classList.toggle('active', isCal);
+  $('viewBtnList').classList.toggle('active', !isCal);
+  $('calendarView').style.display = isCal ? '' : 'none';
+  $('tableView').style.display    = isCal ? 'none' : '';
+  if(isCal) renderCalendar();
+}
+
+function calNav(dir){
+  calMonth += dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0) {calMonth=11;calYear--;}
+  renderCalendar();
+}
+
+async function renderCalendar(){
+  const bks = await DB.getBookings();
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  $('calTitle').textContent=`${MONTHS[calMonth]} ${calYear}`;
+
+  const today=new Date();
+  const firstDow=new Date(calYear,calMonth,1).getDay();
+  const daysInMon=new Date(calYear,calMonth+1,0).getDate();
+  const daysInPrev=new Date(calYear,calMonth,0).getDate();
+
+  // Build booking map: date → status counts
+  const bkMap={};
+  bks.forEach(b=>{
+    if(!bkMap[b.date]) bkMap[b.date]={pending:0,confirmed:0,completed:0,cancelled:0,total:0};
+    bkMap[b.date][b.status]=(bkMap[b.date][b.status]||0)+1;
+    bkMap[b.date].total++;
+  });
+
+  const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let html=DAYS.map(d=>`<div class="cal-dh">${d}</div>`).join('');
+
+  // Prev month overflow
+  for(let i=0;i<firstDow;i++){
+    html+=`<div class="cal-cell cal-other"><div class="cal-dn">${daysInPrev-firstDow+1+i}</div></div>`;
+  }
+
+  // Current month
+  for(let d=1;d<=daysInMon;d++){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=today.getFullYear()===calYear&&today.getMonth()===calMonth&&today.getDate()===d;
+    const bk=bkMap[ds]||{};
+    const total=bk.total||0;
+    const dots=['pending','confirmed','completed','cancelled']
+      .filter(s=>bk[s])
+      .flatMap(s=>Array(Math.min(bk[s],4)).fill(`<div class="cal-dot ${s}"></div>`))
+      .join('');
+    html+=`<div class="cal-cell${isToday?' cal-today':''}" onclick="calDayClick('${ds}')">
+      <div class="cal-dn">${d}</div>
+      ${total?`<div class="cal-dots">${dots}</div><div class="cal-count">${total} bkg${total!==1?'s':''}</div>`:''}
+    </div>`;
+  }
+
+  // Next month overflow
+  const rem=(firstDow+daysInMon)%7;
+  if(rem) for(let i=1;i<=7-rem;i++) html+=`<div class="cal-cell cal-other"><div class="cal-dn">${i}</div></div>`;
+
+  $('calGrid').innerHTML=html;
+}
+
+function calDayClick(dateStr){
+  switchBookingView('list');
+  $('fDate').value=dateStr;
+  renderBookings();
+}
+
+async function updatePaymentStatus(ref, status) {
+  await DB.updateBooking(ref, { paymentStatus: status });
+  const labels = { unpaid: 'Unpaid', downpayment_paid: 'Downpayment Paid', paid: 'Fully Paid', for_verification: 'For Verification' };
+  toast(`Payment marked as: ${labels[status] || status}.`);
+  await renderBookings();
+  renderDash();
+}
+
 async function updateStatus(ref, status) {
   await DB.updateBooking(ref, { status });
   toast(`Status updated to ${status}.`);
@@ -713,7 +933,7 @@ async function updateStatus(ref, status) {
       if (!bk?.email) return;
       fetch(`${SUPABASE_URL.replace(/\/+$/, '')}/functions/v1/send-confirmation-email`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': window._supabase?.supabaseKey || '' },
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
         body: JSON.stringify({
           bookingRef: bk.ref, email: bk.email, fullName: bk.fullName,
           courtName: bk.courtName, date: bk.date, startTime: bk.startTime,
@@ -748,8 +968,11 @@ async function verifyAndConfirm() {
   const ref = $('verifyModal').dataset.ref;
   if (!ref) return;
   try {
-    // Update DB first — use 'paid' (safe known value) for paymentStatus
-    await DB.updateBooking(ref, { status: 'confirmed', paymentStatus: 'paid' });
+    // Set payment status based on whether downpayment or full payment was made
+    const bkForPay = await DB.getBookingByRef(ref);
+    const isFullyPaid = bkForPay && bkForPay.downpayment >= bkForPay.total;
+    const verifiedPayStatus = isFullyPaid ? 'paid' : 'downpayment_paid';
+    await DB.updateBooking(ref, { status: 'confirmed', paymentStatus: verifiedPayStatus });
 
     // Close modal and refresh table immediately — don't wait for email
     closeModal('verifyModal');
@@ -762,7 +985,7 @@ async function verifyAndConfirm() {
       if (!bk?.email) return;
       fetch(`${SUPABASE_URL.replace(/\/+$/, '')}/functions/v1/send-confirmation-email`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': window._supabase?.supabaseKey || '' },
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
         body: JSON.stringify({
           bookingRef: bk.ref, email: bk.email, fullName: bk.fullName,
           courtName: bk.courtName, date: bk.date, startTime: bk.startTime,
@@ -897,9 +1120,9 @@ async function saveReschedule() {
     // Send reschedule email fire-and-forget
     DB.getBookingByRef(ref).then(bk => {
       if (!bk?.email) return;
-      fetch(`${SUPABASE_URL.replace(/\/+$/, '')}/functions/v1/send-reschedule-email`, {
+      fetch('https://ikeujqaqmwmvkyhjqdmv.functions.supabase.co/send-reschedule-email', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': window._supabase?.supabaseKey || '' },
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY },
         body: JSON.stringify({
           bookingRef:   bk.ref,
           email:        bk.email,
@@ -942,6 +1165,118 @@ async function exportCSV(){
 }
 
 /* ==============================================
+   REPORTS
+   ============================================== */
+let _rpPeriod='week', _rpBks=[];
+
+function setReportPeriod(p){
+  _rpPeriod=p;
+  ['week','month','last','all','custom'].forEach(k=>{
+    const el=$('rp-'+k); if(el) el.classList.toggle('active',k===p);
+  });
+  renderReport();
+}
+
+function _rpDateRange(){
+  const now=new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  const toStr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  if(_rpPeriod==='week'){
+    const start=new Date(now); start.setDate(now.getDate()-now.getDay());
+    const end=new Date(start); end.setDate(start.getDate()+6);
+    return{from:toStr(start),to:toStr(end)};
+  }
+  if(_rpPeriod==='month'){
+    return{from:`${now.getFullYear()}-${pad(now.getMonth()+1)}-01`,to:toStr(new Date(now.getFullYear(),now.getMonth()+1,0))};
+  }
+  if(_rpPeriod==='last'){
+    const y=now.getMonth()===0?now.getFullYear()-1:now.getFullYear();
+    const m=now.getMonth()===0?12:now.getMonth();
+    return{from:`${y}-${pad(m)}-01`,to:toStr(new Date(y,m,0))};
+  }
+  if(_rpPeriod==='custom'){
+    return{from:($('rpFrom')||{}).value||'',to:($('rpTo')||{}).value||''};
+  }
+  return{from:'',to:''};
+}
+
+async function renderReport(){
+  const allBks=await DB.getBookings();
+  const{from,to}=_rpDateRange();
+  let bks=allBks.filter(b=>b.status!=='cancelled');
+  if(from) bks=bks.filter(b=>b.date>=from);
+  if(to)   bks=bks.filter(b=>b.date<=to);
+  _rpBks=bks;
+
+  const gross=bks.reduce((s,b)=>s+(b.total||0),0);
+  const collected=bks.filter(b=>b.paymentStatus==='paid').reduce((s,b)=>s+(b.total||0),0);
+  const pending=bks.filter(b=>!b.paymentStatus||b.paymentStatus==='unpaid'||b.paymentStatus==='downpayment_paid').reduce((s,b)=>s+(b.total||0),0);
+  $('rpGross').textContent=fmt(gross);
+  $('rpCollected').textContent=fmt(collected);
+  $('rpPending').textContent=fmt(pending);
+  $('rpCount').textContent=bks.length;
+
+  // Revenue by court
+  const courtMap={};
+  bks.forEach(b=>{courtMap[b.courtName]=(courtMap[b.courtName]||0)+(b.total||0);});
+  const courtEntries=Object.entries(courtMap).sort((a,b)=>b[1]-a[1]);
+  const maxCourt=courtEntries[0]?courtEntries[0][1]:1;
+  $('rpCourtChart').innerHTML=courtEntries.length===0?'<p class="rp-empty">No bookings in this period.</p>':
+    courtEntries.map(([name,rev])=>`<div class="rp-bar-row">
+      <div class="rp-bar-label" title="${name}">${name}</div>
+      <div class="rp-bar-track"><div class="rp-bar-fill" style="width:${Math.round(rev/maxCourt*100)}%"></div></div>
+      <div class="rp-bar-val">${fmt(rev)}</div>
+    </div>`).join('');
+
+  // Revenue by payment method
+  const payMap={};
+  bks.forEach(b=>{const k=b.paymentMethod==='gotyme'?'GoTyme':b.paymentMethod.toUpperCase();payMap[k]=(payMap[k]||0)+(b.total||0);});
+  const payEntries=Object.entries(payMap).sort((a,b)=>b[1]-a[1]);
+  const maxPay=payEntries[0]?payEntries[0][1]:1;
+  $('rpPayChart').innerHTML=payEntries.length===0?'<p class="rp-empty">No bookings in this period.</p>':
+    payEntries.map(([name,rev])=>`<div class="rp-bar-row">
+      <div class="rp-bar-label">${name}</div>
+      <div class="rp-bar-track"><div class="rp-bar-fill" style="width:${Math.round(rev/maxPay*100)}%"></div></div>
+      <div class="rp-bar-val">${fmt(rev)}</div>
+    </div>`).join('');
+
+  // Monthly trend — last 6 months (always all bookings, not filtered by period)
+  const now2=new Date();
+  const months=[];
+  for(let i=5;i>=0;i--){
+    const d=new Date(now2.getFullYear(),now2.getMonth()-i,1);
+    months.push({label:d.toLocaleDateString('en-PH',{month:'short',year:'2-digit'}),key:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`});
+  }
+  const monthMap={};
+  allBks.filter(b=>b.status!=='cancelled').forEach(b=>{
+    const mk=(b.date||'').substring(0,7);
+    if(months.find(m=>m.key===mk)) monthMap[mk]=(monthMap[mk]||0)+(b.total||0);
+  });
+  const maxMon=Math.max(...months.map(m=>monthMap[m.key]||0),1);
+  $('rpTrend').innerHTML=months.map(m=>{
+    const rev=monthMap[m.key]||0;
+    const w=Math.round(rev/maxMon*100);
+    return`<div class="rp-trend-row">
+      <div class="rp-trend-month">${m.label}</div>
+      <div class="rp-trend-track"><div class="rp-trend-fill" style="width:${w}%">${w>15?fmt(rev):''}</div></div>
+      <div class="rp-trend-val">${rev>0?fmt(rev):'—'}</div>
+    </div>`;
+  }).join('');
+}
+
+async function exportReportCSV(){
+  const bks=_rpBks.length?_rpBks:(await DB.getBookings()).filter(b=>b.status!=='cancelled');
+  const h=['Ref','Name','Email','Contact','Court','Date','Start','End','Hrs','Total','Downpayment','Payment Method','Payment Status','Booking Status','Created'];
+  const rows=bks.map(b=>[b.ref,b.fullName,b.email,b.contactNumber,b.courtName,b.date,b.startTime,b.endTime,b.duration,b.total,b.downpayment??'',b.paymentMethod,b.paymentStatus||'unpaid',b.status,b.createdAt]);
+  const csv=[h,...rows].map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`courtbook_report_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  toast('Report exported!');
+}
+
+/* ==============================================
    COURTS
    ============================================== */
 async function renderCourts(){
@@ -960,7 +1295,7 @@ async function renderCourts(){
     <td>${c.blocked?'<span class="bdg bdg-x">Maintenance</span>':'<span class="bdg bdg-c">Available</span>'}</td>
     <td><div style="display:flex;gap:6px">
       <button class="btn btn-g btn-sm" onclick="openCourtModal('${c.id}')">✏️ Edit</button>
-      <button class="btn btn-sm" style="background:${c.blocked?'rgba(79,124,240,.12);color:var(--green)':'rgba(255,214,0,.12);color:var(--yellow)'}" onclick="toggleBlock('${c.id}')">${c.blocked?'✅ Unblock':'🔒 Block'}</button>
+      <button class="btn btn-sm" style="background:${c.blocked?'rgba(0,200,83,.12);color:var(--green)':'rgba(255,214,0,.12);color:var(--yellow)'}" onclick="toggleBlock('${c.id}')">${c.blocked?'✅ Unblock':'🔒 Block'}</button>
       <button class="btn btn-d btn-sm" onclick="delCourt('${c.id}')">🗑️</button>
     </div></td>
   </tr>`).join('');
@@ -1057,18 +1392,10 @@ async function saveCourt(){
   const court = id
     ? { ...(await DB.getCourts()).find(c=>c.id===id), name, desc, rate, photo, rateSchedule }
     : { id:'c'+Date.now(), name, desc, rate, blocked:false, feats:[], photo, rateSchedule };
-  const saveBtn = document.querySelector('#courtModal .btn-p');
-  if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Saving…';}
-  try {
-    await DB.saveCourt(court);
-    closeModal('courtModal');
-    await renderCourts();
-    toast(id?'Court updated!':'Court added!');
-  } catch(err) {
-    toast('Save failed: ' + (err?.message || String(err)), 'err');
-  } finally {
-    if(saveBtn){saveBtn.disabled=false;saveBtn.innerHTML='💾 Save';}
-  }
+  await DB.saveCourt(court);
+  closeModal('courtModal');
+  await renderCourts();
+  toast(id?'Court updated!':'Court added!');
 }
 
 async function toggleBlock(id){
