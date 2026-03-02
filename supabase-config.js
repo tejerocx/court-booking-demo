@@ -191,6 +191,14 @@ window.DB = {
     const { data: { session } } = await _sb.auth.getSession();
     const token = session?.access_token;
     if (!token) throw new Error('Session expired — please refresh the page and log in again.');
+    // Decode JWT to verify it has the correct role (debug check)
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+      console.log('[saveCourt] JWT role:', payload.role, '| sub:', payload.sub, '| exp:', new Date(payload.exp*1000).toISOString());
+      if (payload.role !== 'authenticated') {
+        throw new Error(`Token role is "${payload.role}" instead of "authenticated". Please log out and log in again.`);
+      }
+    } catch(decodeErr) { if (decodeErr.message?.includes('Token role')) throw decodeErr; }
     const res = await fetch(`${SUPABASE_URL}/rest/v1/courts`, {
       method: 'POST',
       headers: {
