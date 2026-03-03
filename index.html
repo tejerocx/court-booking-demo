@@ -1704,6 +1704,7 @@ body.light #splashScreen { background: #080c14; }
 let court = null;
 let selSlots = [];
 let wizStep = 1, wizStartStep = 1;
+let _lastSubmitAt = 0; // rate limiting — ms timestamp of last submission attempt
 let openHour  = 6;
 let closeHour = 22;
 let cachedBookedSlots = new Set(); // cached after renderSlots() — avoids re-fetching on every click
@@ -2430,6 +2431,15 @@ async function submitBooking(e) {
   if (e) e.preventDefault();
   const submitBtn = $('wizNextBtn');
   if (submitBtn?.disabled) return;
+  // Rate limiting: 30-second cooldown between submission attempts
+  const now = Date.now();
+  const cooldown = 30000;
+  if (now - _lastSubmitAt < cooldown) {
+    const wait = Math.ceil((cooldown - (now - _lastSubmitAt)) / 1000);
+    toast(`Please wait ${wait}s before trying again.`, 'inf');
+    return;
+  }
+  _lastSubmitAt = now;
   if (submitBtn) {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Processing...';
@@ -2443,12 +2453,14 @@ async function submitBooking(e) {
     [!$('bDate').value, 'Please select a date.'],
     [selSlots.length === 0, 'Please select at least one time slot.'],
     [!$('bName').value.trim(), 'Please enter your full name.'],
+    [$('bName').value.trim().length < 3, 'Name must be at least 3 characters.'],
     [!$('bPhone').value.trim(), 'Please enter your contact number.'],
+    [!/^(09|\+639)\d{9}$/.test($('bPhone').value.replace(/\s|-/g,'')), 'Enter a valid PH number (e.g. 09XX XXX XXXX).'],
     [!$('bEmail').value.trim(), 'Please enter your email.'],
+    [!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('bEmail').value), 'Please enter a valid email address.'],
     [!hasPaymentMethod, 'No payment method is enabled right now. Please contact admin.'],
     [!payMethod, 'Please select a payment method.'],
     [!!payMethod && !paymentMethods[payMethod], 'Selected payment method is no longer available.'],
-    [!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('bEmail').value), 'Please enter a valid email address.'],
     [(payMethod === 'gcash' || payMethod === 'gotyme') && !gcashRef, 'Please enter your GCash/GoTyme reference number after paying.'],
   ];
   for (const [fail, msg] of checks) {
