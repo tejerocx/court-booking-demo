@@ -593,21 +593,29 @@ body.light .h-title-hl {
   animation:fadeSlideUp .5s ease .32s both;
 }
 .h-ctas {
-  display:flex; flex-direction:column; align-items:center; gap:11px;
-  margin-bottom:52px; animation:fadeSlideUp .5s ease .42s both;
+  display:flex; flex-direction:row; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;
+  margin-bottom:18px; animation:fadeSlideUp .5s ease .42s both;
 }
 .btn-hero {
   display:inline-flex; align-items:center; gap:10px;
   padding:15px 32px; border-radius:100px;
-  background:linear-gradient(135deg,#4f7cf0,#2557d0);
-  color:#fff; font-family:'Outfit',sans-serif; font-size:1rem; font-weight:700;
+  font-family:'Outfit',sans-serif; font-size:1rem; font-weight:700;
   border:none; cursor:pointer; text-decoration:none;
-  box-shadow:0 8px 32px rgba(79,124,240,.42);
   transition:transform .2s,box-shadow .2s;
+}
+.btn-hero-primary {
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff; box-shadow:0 8px 32px var(--glow);
   animation:btnGlow 3s ease 1.2s infinite;
 }
-.btn-hero:hover { transform:translateY(-3px); box-shadow:0 14px 44px rgba(79,124,240,.58); color:#fff; }
-.h-cta-note { font-size:.75rem; color:var(--muted); letter-spacing:.3px; }
+.btn-hero-primary:hover { transform:translateY(-3px); box-shadow:0 14px 44px var(--glow); color:#fff; }
+.btn-hero-sec {
+  background:rgba(255,255,255,.06); color:var(--text);
+  border:1.5px solid var(--border);
+  box-shadow:none;
+}
+.btn-hero-sec:hover { transform:translateY(-2px); background:rgba(255,255,255,.10); color:var(--text); }
+.h-cta-note { font-size:.75rem; color:var(--muted); letter-spacing:.3px; margin-bottom:52px; animation:fadeSlideUp .5s ease .48s both; }
 .h-stats {
   display:flex; justify-content:center; align-items:center;
   gap:44px; flex-wrap:wrap;
@@ -1241,12 +1249,7 @@ body.light #splashScreen { background: #080c14; }
       <span class="logo-sub">Demo System</span>
     </span>
   </div>
-  <div class="nav-headline">
-    BOOK YOUR <span class="hl">COURT</span> ONLINE
-    <span class="nav-tagline">Fast · Simple · Reliable</span>
-  </div>
   <div class="nav-r">
-    <a href="#courts" class="nav-book-btn" onclick="document.getElementById('courts').scrollIntoView({behavior:'smooth'}); return false;">Book Now</a>
     <div class="sw-wrap">
       <span>☀️</span>
       <label class="sw"><input type="checkbox" id="darkTog" checked><span class="sw-tr"></span></label>
@@ -1266,12 +1269,14 @@ body.light #splashScreen { background: #080c14; }
     <h1 class="h-title">Book Your Court.<br><span class="h-title-hl">Play Your Game.</span></h1>
     <p class="h-desc">Fast, reliable sports court reservations. Pick a time slot, fill in your details, and you're confirmed — no account needed.</p>
     <div class="h-ctas">
-      <a href="#courts" class="btn-hero" onclick="document.getElementById('courts').scrollIntoView({behavior:'smooth'}); return false;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8,12 12,16 16,12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
-        View Available Courts
+      <button class="btn-hero btn-hero-primary" onclick="openWizard()">
+        🎾 Book a Court
+      </button>
+      <a href="#courts" class="btn-hero btn-hero-sec" onclick="document.getElementById('courts').scrollIntoView({behavior:'smooth'}); return false;">
+        View Courts
       </a>
-      <span class="h-cta-note">No signup required &nbsp;·&nbsp; Book in under 2 minutes</span>
     </div>
+    <span class="h-cta-note">No signup required &nbsp;·&nbsp; Book in under 2 minutes</span>
     <div class="h-stats">
       <div class="h-stat">
         <span class="h-stat-n" id="sCourts">—</span>
