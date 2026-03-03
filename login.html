@@ -8,14 +8,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--green:#00c853;--green-dark:#007a33;--glow:rgba(0,200,83,.22);--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--input:#21262d;--red:#f85149;}
+:root{--green:#4f7cf0;--green-dark:#2557d0;--glow:rgba(79,124,240,.22);--bg:#0b0f1a;--card:#111827;--border:#1e2a42;--text:#e8edf8;--muted:#6a80a8;--input:#151c2e;--red:#f85149;}
 body.light{--bg:#f0f4f8;--card:#fff;--border:#d0d7de;--text:#1a1a2e;--muted:#6c7892;--input:#eaeef2;}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;transition:background .3s,color .3s;}
 .bg-glow{position:fixed;top:-100px;left:50%;transform:translateX(-50%);width:700px;height:500px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,200,83,.14) 0%,transparent 70%);pointer-events:none;}
 .bg-grid{position:fixed;inset:0;opacity:.035;background-image:repeating-linear-gradient(0deg,var(--green) 0,var(--green) 1px,transparent 1px,transparent 72px),repeating-linear-gradient(90deg,var(--green) 0,var(--green) 1px,transparent 1px,transparent 80px);pointer-events:none;}
 .card{position:relative;z-index:10;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:44px 38px;width:100%;max-width:400px;box-shadow:0 24px 64px rgba(0,0,0,.5);}
 .logo{text-align:center;margin-bottom:28px;}
-.logo-ic{width:60px;height:60px;background:linear-gradient(135deg,var(--green),var(--green-dark));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.9rem;margin:0 auto 14px;box-shadow:0 8px 24px var(--glow);}
+.logo-ic{margin:0 auto 14px;display:flex;align-items:center;justify-content:center;}
 .logo-tx{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:2px;}
 .logo-sub{color:var(--muted);font-size:.88rem;margin-top:4px;}
 .divider{height:1px;background:var(--border);margin:22px 0;}
@@ -23,12 +23,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .err.show{display:block;}
 .fl{display:block;font-size:.77rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:6px;}
 .fi{width:100%;padding:11px 13px;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.92rem;transition:border-color .2s,box-shadow .2s;margin-bottom:14px;}
-.fi:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(0,200,83,.12);}
+.fi:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(79,124,240,.12);}
 .fi::placeholder{color:var(--muted);}
 .btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:13px 20px;border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;}
 .btn-p{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;box-shadow:0 4px 14px var(--glow);}
 .btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 22px var(--glow);}
-.hint{background:rgba(0,200,83,.06);border:1px solid rgba(0,200,83,.2);border-radius:8px;padding:12px;font-size:.82rem;color:var(--muted);margin-top:18px;text-align:center;}
+.hint{background:rgba(79,124,240,.06);border:1px solid rgba(79,124,240,.2);border-radius:8px;padding:12px;font-size:.82rem;color:var(--muted);margin-top:18px;text-align:center;}
 .hint strong{color:var(--green);}
 .back{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:20px;font-size:.86rem;color:var(--muted);transition:color .2s;text-decoration:none;}
 .back:hover{color:var(--green);}
@@ -36,7 +36,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 .forgot-link:hover{color:var(--green);}
 .reset-panel{display:none;margin-top:18px;}
 .reset-panel.show{display:block;}
-.ok-msg{background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.25);border-radius:8px;padding:12px 14px;font-size:.84rem;color:var(--green);margin-bottom:14px;display:none;}
+.ok-msg{background:rgba(79,124,240,.08);border:1px solid rgba(79,124,240,.25);border-radius:8px;padding:12px 14px;font-size:.84rem;color:var(--green);margin-bottom:14px;display:none;}
 .ok-msg.show{display:block;}
 .new-pass-panel{display:none;margin-top:4px;}
 .new-pass-panel.show{display:block;}
@@ -54,8 +54,14 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 
 <div class="card">
   <div class="logo">
-    <div class="logo-ic">🏓</div>
-    <div class="logo-tx">COURTBOOK DASHBOARD</div>
+    <div class="logo-ic"><svg width="52" height="52" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 4px">
+      <rect width="36" height="36" rx="10" fill="rgba(79,124,240,.2)" stroke="rgba(79,124,240,.5)" stroke-width="1.5"/>
+      <rect x="6" y="10" width="24" height="16" rx="2" stroke="#4f7cf0" stroke-width="1.5"/>
+      <line x1="18" y1="10" x2="18" y2="26" stroke="#4f7cf0" stroke-width="1" stroke-dasharray="2 2"/>
+      <circle cx="18" cy="18" r="3.5" stroke="#4f7cf0" stroke-width="1.2"/>
+      <circle cx="18" cy="18" r="1.2" fill="#4f7cf0"/>
+    </svg></div>
+    <div class="logo-tx">COURTBOOK</div>
     <div class="logo-sub">Admin Control Panel</div>
   </div>
   <div class="divider"></div>
